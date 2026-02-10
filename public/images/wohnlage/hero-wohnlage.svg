@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" width="1200" height="600">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#87CEEB"/>
+      <stop offset="100%" stop-color="#E0F0FF"/>
+    </linearGradient>
+    <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6B8E4E"/>
+      <stop offset="100%" stop-color="#4A7A2E"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="600" fill="url(#sky)"/>
+  <ellipse cx="600" cy="700" rx="900" ry="300" fill="url(#hill)"/>
+  <text x="600" y="250" text-anchor="middle" font-family="Inter, sans-serif" font-size="28" fill="#333" font-weight="300">Wohnlage — Kobelwald, St. Galler Rheintal</text>
+  <text x="600" y="290" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" fill="#555">Platzhalter — durch echtes Foto ersetzen</text>
+</svg>
