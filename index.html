@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rhycasa - Neubauprojekte</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f5f5f0;
+            color: #2c2c2c;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: #25413c;
+            color: #fff;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            opacity: 0.7;
+            letter-spacing: 0.1em;
+        }
+
+        /* --- Project Tabs --- */
+        .project-tabs {
+            display: flex;
+            background: #1e352f;
+            border-bottom: 2px solid #25413c;
+        }
+
+        .project-tab {
+            padding: 0.8rem 2rem;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .project-tab:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .project-tab.active {
+            color: #fff;
+            border-bottom-color: #d9eaca;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- Project Views --- */
+        .project-view {
+            display: none;
+        }
+
+        .project-view.active {
+            display: flex;
+        }
+
+        .main-container {
+            min-height: calc(100vh - 120px);
+        }
+
+        .svg-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            min-height: 80vh;
+            overflow: visible;
+        }
+
+        .building-svg {
+            width: 100%;
+            max-width: 1600px;
+            height: 80vh;
+            cursor: default;
+        }
+
+        /* --- SVG interactivity styles (injected into SVG) --- */
+
+        .info-panel {
+            width: 360px;
+            min-width: 360px;
+            background: #fff;
+            border-left: 1px solid #e0e0d8;
+            padding: 2rem;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .info-panel h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #25413c;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-panel .subtitle {
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-panel .placeholder {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .info-panel .placeholder svg {
+            display: block;
+            margin: 0 auto 1rem;
+            opacity: 0.3;
+        }
+
+        .detail-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-section h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #25413c;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 2px solid #d9eaca;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.4rem 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #f0f0ec;
+        }
+
+        .detail-row .label {
+            color: #777;
+        }
+
+        .detail-row .value {
+            font-weight: 500;
+            color: #2c2c2c;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .status-badge.available {
+            background: #d9eaca;
+            color: #25413c;
+        }
+
+        .status-badge.reserved {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-badge.sold {
+            background: #f5c6cb;
+            color: #721c24;
+        }
+
+        .level-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .level-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #d0d0c8;
+            background: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            color: #555;
+        }
+
+        .level-btn:hover {
+            border-color: #25413c;
+            color: #25413c;
+        }
+
+        .level-btn.active {
+            background: #25413c;
+            color: #fff;
+            border-color: #25413c;
+        }
+
+        .building-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .building-nav button {
+            flex: 1;
+            padding: 0.6rem;
+            border: 2px solid #d0d0c8;
+            background: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            color: #555;
+        }
+
+        .building-nav button:hover {
+            border-color: #25413c;
+            color: #25413c;
+        }
+
+        .building-nav button.active {
+            background: #25413c;
+            color: #fff;
+            border-color: #25413c;
+        }
+
+        .legend {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e0e0d8;
+        }
+
+        .legend h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #999;
+            margin-bottom: 0.75rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: #777;
+            margin-bottom: 0.4rem;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+
+        .tooltip {
+            position: fixed;
+            background: #25413c;
+            color: #fff;
+            padding: 0.5rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s;
+            z-index: 1000;
+            white-space: nowrap;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        @media (max-width: 900px) {
+            .project-view {
+                flex-direction: column;
+            }
+
+            .info-panel {
+                width: 100%;
+                min-width: unset;
+                border-left: none;
+                border-top: 1px solid #e0e0d8;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div>
+            <h1 id="header-title">Trivista</h1>
+            <p id="header-subtitle">Neubauprojekt &mdash; Interaktive Ansicht</p>
+        </div>
+    </header>
+
+    <div class="project-tabs">
+        <button class="project-tab active" data-project="trivista">Trivista</button>
+        <button class="project-tab" data-project="ebenau">Ebenau</button>
+    </div>
+
+    <div class="main-container">
+        <!-- TRIVISTA -->
+        <div class="project-view active" id="view-trivista">
+            <div class="svg-container">
+                <object id="svg-trivista" class="building-svg" data="Untitled-1.xml" type="image/svg+xml">
+                    Ihr Browser unterst&uuml;tzt keine SVG-Darstellung.
+                </object>
+                <div class="tooltip" id="tooltip-trivista"></div>
+            </div>
+
+            <div class="info-panel" id="panel-trivista">
+                <div class="building-nav" id="nav-trivista">
+                    <button data-building="1">Haus 1</button>
+                    <button data-building="2">Haus 2</button>
+                    <button data-building="3">Haus 3</button>
+                </div>
+
+                <div id="panel-content-trivista">
+                    <div class="placeholder">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5">
+                            <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" />
+                            <rect x="9" y="9" width="2" height="2" />
+                            <rect x="13" y="9" width="2" height="2" />
+                        </svg>
+                        Klicken Sie auf ein Geb&auml;ude oder<br>w&auml;hlen Sie oben ein Haus aus.
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <h3>Legende</h3>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #d9eaca;"></div>
+                        Verf&uuml;gbar
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #fff3cd;"></div>
+                        Reserviert
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #f5c6cb;"></div>
+                        Verkauft
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EBENAU -->
+        <div class="project-view" id="view-ebenau">
+            <div class="svg-container">
+                <object id="svg-ebenau" class="building-svg" data="ebenau.svg" type="image/svg+xml">
+                    Ihr Browser unterst&uuml;tzt keine SVG-Darstellung.
+                </object>
+                <div class="tooltip" id="tooltip-ebenau"></div>
+            </div>
+
+            <div class="info-panel" id="panel-ebenau">
+                <div class="building-nav" id="nav-ebenau">
+                    <button data-building="A">Haus A</button>
+                    <button data-building="B">Haus B</button>
+                    <button data-building="C">Haus C</button>
+                </div>
+
+                <div id="panel-content-ebenau">
+                    <div class="placeholder">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5">
+                            <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" />
+                            <rect x="9" y="9" width="2" height="2" />
+                            <rect x="13" y="9" width="2" height="2" />
+                        </svg>
+                        W&auml;hlen Sie ein Haus aus,<br>um Details zu sehen.
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <h3>Legende</h3>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #d9eaca;"></div>
+                        Verf&uuml;gbar
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #fff3cd;"></div>
+                        Reserviert
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-dot" style="background: #f5c6cb;"></div>
+                        Verkauft
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================
+        // PROJECT TAB SWITCHING
+        // =========================================================
+        let activeProject = 'trivista';
+
+        const projectInfo = {
+            trivista: { title: 'Trivista', subtitle: 'Neubauprojekt \u2014 Interaktive Ansicht' },
+            ebenau: { title: 'Ebenau', subtitle: 'Neubauprojekt Oberegg \u2014 Interaktive Ansicht' }
+        };
+
+        document.querySelectorAll('.project-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const project = tab.dataset.project;
+                if (project === activeProject) return;
+                activeProject = project;
+
+                // Update tabs
+                document.querySelectorAll('.project-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Update views
+                document.querySelectorAll('.project-view').forEach(v => v.classList.remove('active'));
+                document.getElementById(`view-${project}`).classList.add('active');
+
+                // Update header
+                document.getElementById('header-title').textContent = projectInfo[project].title;
+                document.getElementById('header-subtitle').innerHTML = projectInfo[project].subtitle;
+            });
+        });
+
+        // =========================================================
+        // TRIVISTA
+        // =========================================================
+        const buildingData = {
+            1: {
+                name: 'Haus 1',
+                description: 'Westlicher Bauk\u00f6rper',
+                levels: {
+                    basement: { name: 'Untergeschoss', units: [{ id: 'UG-1.1', type: 'Keller / Technik', area: '\u2014', status: 'available' }] },
+                    ground: { name: 'Erdgeschoss', units: [{ id: 'EG-1.1', type: '3.5-Zi.-Wohnung', area: '95 m\u00b2', status: 'available', price: 'auf Anfrage' }, { id: 'EG-1.2', type: '4.5-Zi.-Wohnung', area: '110 m\u00b2', status: 'reserved', price: 'auf Anfrage' }] },
+                    first: { name: '1. Obergeschoss', units: [{ id: 'OG1-1.1', type: '3.5-Zi.-Wohnung', area: '95 m\u00b2', status: 'available', price: 'auf Anfrage' }, { id: 'OG1-1.2', type: '4.5-Zi.-Wohnung', area: '110 m\u00b2', status: 'available', price: 'auf Anfrage' }] },
+                    roof: { name: 'Dachgeschoss', units: [{ id: 'DG-1.1', type: '5.5-Zi.-Attikawohnung', area: '130 m\u00b2', status: 'sold', price: '\u2014' }] }
+                }
+            },
+            2: {
+                name: 'Haus 2',
+                description: 'Mittlerer Bauk\u00f6rper',
+                levels: {
+                    basement: { name: 'Untergeschoss', units: [{ id: 'UG-2.1', type: 'Keller / Technik', area: '\u2014', status: 'available' }] },
+                    ground: { name: 'Erdgeschoss', units: [{ id: 'EG-2.1', type: '3.5-Zi.-Wohnung', area: '92 m\u00b2', status: 'available', price: 'auf Anfrage' }, { id: 'EG-2.2', type: '4.5-Zi.-Wohnung', area: '115 m\u00b2', status: 'available', price: 'auf Anfrage' }] },
+                    first: { name: '1. Obergeschoss', units: [{ id: 'OG1-2.1', type: '3.5-Zi.-Wohnung', area: '92 m\u00b2', status: 'reserved', price: 'auf Anfrage' }, { id: 'OG1-2.2', type: '4.5-Zi.-Wohnung', area: '115 m\u00b2', status: 'available', price: 'auf Anfrage' }] },
+                    roof: { name: 'Dachgeschoss', units: [{ id: 'DG-2.1', type: '5.5-Zi.-Attikawohnung', area: '135 m\u00b2', status: 'available', price: 'auf Anfrage' }] }
+                }
+            },
+            3: {
+                name: 'Haus 3',
+                description: '\u00d6stlicher Bauk\u00f6rper',
+                levels: {
+                    basement: { name: 'Untergeschoss', units: [{ id: 'UG-3.1', type: 'Keller / Technik', area: '\u2014', status: 'available' }] },
+                    ground: { name: 'Erdgeschoss', units: [{ id: 'EG-3.1', type: '3.5-Zi.-Wohnung', area: '90 m\u00b2', status: 'sold', price: '\u2014' }, { id: 'EG-3.2', type: '4.5-Zi.-Wohnung', area: '108 m\u00b2', status: 'available', price: 'auf Anfrage' }] },
+                    first: { name: '1. Obergeschoss', units: [{ id: 'OG1-3.1', type: '3.5-Zi.-Wohnung', area: '90 m\u00b2', status: 'available', price: 'auf Anfrage' }, { id: 'OG1-3.2', type: '4.5-Zi.-Wohnung', area: '108 m\u00b2', status: 'reserved', price: 'auf Anfrage' }] },
+                    roof: { name: 'Dachgeschoss', units: [{ id: 'DG-3.1', type: '5.5-Zi.-Attikawohnung', area: '128 m\u00b2', status: 'available', price: 'auf Anfrage' }] }
+                }
+            }
+        };
+
+        const statusLabels = { available: 'Verf\u00fcgbar', reserved: 'Reserviert', sold: 'Verkauft' };
+
+        let activeBuildingId = null;
+        let activeLevelKey = null;
+        let svgDocTrivista = null;
+
+        const levelOrder = ['basement', 'ground', 'first', 'roof'];
+        const explodedGap = 30;
+
+        // --- Trivista SVG ---
+        const svgObjTrivista = document.getElementById('svg-trivista');
+        svgObjTrivista.addEventListener('load', initTrivista);
+
+        function initTrivista() {
+            svgDocTrivista = svgObjTrivista.contentDocument;
+            if (!svgDocTrivista) return;
+            injectTrivistaStyles();
+            bindTrivistaEvents();
+            bindTrivistaNav();
+        }
+
+        function injectTrivistaStyles() {
+            const style = svgDocTrivista.createElementNS('http://www.w3.org/2000/svg', 'style');
+            style.textContent = `
+                .apartment-building { cursor: pointer; }
+                .building-1--overlay, .building-2--overlay, .building-3--overlay {
+                    transition: fill 0.2s, opacity 0.2s;
+                    fill: rgba(255, 255, 255, 0) !important;
+                }
+                .apartment-building:hover .building-1--overlay,
+                .apartment-building:hover .building-2--overlay,
+                .apartment-building:hover .building-3--overlay {
+                    fill: rgba(37, 65, 60, 0.12) !important;
+                }
+                .apartment-building.active .building-1--overlay,
+                .apartment-building.active .building-2--overlay,
+                .apartment-building.active .building-3--overlay {
+                    fill: rgba(37, 65, 60, 0.18) !important;
+                }
+                .apartment-level, [id$="--basement"] {
+                    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.35s ease;
+                    cursor: pointer;
+                }
+                .apartment-level.highlight, [id$="--basement"].highlight {
+                    filter: brightness(0.75) saturate(1.4);
+                }
+            `;
+            svgDocTrivista.querySelector('svg').prepend(style);
+        }
+
+        function animateTrivistaHover(buildingId, hoveredLevel) {
+            const hoveredIdx = levelOrder.indexOf(hoveredLevel);
+            levelOrder.forEach((level, idx) => {
+                const el = svgDocTrivista.getElementById(`apartment-${buildingId}--${level}`);
+                if (!el) return;
+                if (idx > hoveredIdx) {
+                    el.setAttribute('transform', `translate(0, ${-(idx - hoveredIdx) * explodedGap})`);
+                } else {
+                    el.setAttribute('transform', 'translate(0, 0)');
+                }
+            });
+        }
+
+        function resetTrivistaHover(buildingId) {
+            levelOrder.forEach(level => {
+                const el = svgDocTrivista.getElementById(`apartment-${buildingId}--${level}`);
+                if (el) el.setAttribute('transform', 'translate(0, 0)');
+            });
+        }
+
+        function bindTrivistaEvents() {
+            const tooltip = document.getElementById('tooltip-trivista');
+            for (let i = 1; i <= 3; i++) {
+                const bg = svgDocTrivista.getElementById(`apartment-building--${i}`);
+                if (!bg) continue;
+                bg.addEventListener('click', e => { e.stopPropagation(); selectBuilding(i); });
+                bg.addEventListener('mouseleave', () => {
+                    tooltip.classList.remove('visible');
+                    resetTrivistaHover(i);
+                    levelOrder.forEach(l => {
+                        const el = svgDocTrivista.getElementById(`apartment-${i}--${l}`);
+                        if (el) el.classList.remove('highlight');
+                    });
+                });
+                levelOrder.forEach(level => {
+                    const lg = svgDocTrivista.getElementById(`apartment-${i}--${level}`);
+                    if (!lg) return;
+                    lg.addEventListener('click', e => { e.stopPropagation(); selectBuilding(i, level); });
+                    lg.addEventListener('mouseenter', () => {
+                        tooltip.textContent = `Haus ${i} \u2013 ${buildingData[i].levels[level].name}`;
+                        tooltip.classList.add('visible');
+                        animateTrivistaHover(i, level);
+                        levelOrder.forEach(l => {
+                            const el = svgDocTrivista.getElementById(`apartment-${i}--${l}`);
+                            if (!el) return;
+                            el.classList.remove('highlight');
+                            if (l === level) el.classList.add('highlight');
+                        });
+                    });
+                    lg.addEventListener('mousemove', e => {
+                        tooltip.style.left = (e.clientX + 12) + 'px';
+                        tooltip.style.top = (e.clientY - 30) + 'px';
+                    });
+                    lg.addEventListener('mouseleave', () => tooltip.classList.remove('visible'));
+                });
+            }
+        }
+
+        function bindTrivistaNav() {
+            document.querySelectorAll('#nav-trivista button').forEach(btn => {
+                btn.addEventListener('click', () => selectBuilding(parseInt(btn.dataset.building)));
+            });
+        }
+
+        function selectBuilding(buildingId, levelKey = null) {
+            activeBuildingId = buildingId;
+            activeLevelKey = levelKey;
+            document.querySelectorAll('#nav-trivista button').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.building) === buildingId);
+            });
+            if (svgDocTrivista) {
+                svgDocTrivista.querySelectorAll('.apartment-building').forEach(g => g.classList.remove('active'));
+                const ag = svgDocTrivista.getElementById(`apartment-building--${buildingId}`);
+                if (ag) ag.classList.add('active');
+                for (let i = 1; i <= 3; i++) {
+                    levelOrder.forEach(l => {
+                        const el = svgDocTrivista.getElementById(`apartment-${i}--${l}`);
+                        if (el) el.classList.remove('highlight');
+                    });
+                }
+                if (levelKey) {
+                    const el = svgDocTrivista.getElementById(`apartment-${buildingId}--${levelKey}`);
+                    if (el) el.classList.add('highlight');
+                    animateTrivistaHover(buildingId, levelKey);
+                } else {
+                    resetTrivistaHover(buildingId);
+                }
+            }
+            renderTrivistaPanel(buildingId, levelKey);
+        }
+
+        function renderTrivistaPanel(buildingId, levelKey) {
+            const data = buildingData[buildingId];
+            const panel = document.getElementById('panel-content-trivista');
+            let html = `<h2>${data.name}</h2><div class="subtitle">${data.description}</div>
+                <div class="detail-section"><h3>Stockwerk w\u00e4hlen</h3><div class="level-buttons">`;
+            levelOrder.forEach(key => {
+                const level = data.levels[key];
+                html += `<button class="level-btn ${key === levelKey ? 'active' : ''}" onclick="selectBuilding(${buildingId}, '${key}')">${level.name}</button>`;
+            });
+            html += '</div></div>';
+            if (levelKey && data.levels[levelKey]) {
+                const level = data.levels[levelKey];
+                html += `<div class="detail-section"><h3>${level.name} \u2013 Einheiten</h3>`;
+                level.units.forEach(unit => {
+                    html += `<div style="background:#fafaf8;border-radius:6px;padding:1rem;margin-bottom:0.75rem;border:1px solid #eee;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                            <strong style="font-size:0.95rem;">${unit.id}</strong>
+                            <span class="status-badge ${unit.status}">${statusLabels[unit.status]}</span>
+                        </div>
+                        <div class="detail-row"><span class="label">Typ</span><span class="value">${unit.type}</span></div>
+                        ${unit.area !== '\u2014' ? `<div class="detail-row"><span class="label">Fl\u00e4che</span><span class="value">${unit.area}</span></div>` : ''}
+                        ${unit.price ? `<div class="detail-row"><span class="label">Preis</span><span class="value">${unit.price}</span></div>` : ''}
+                    </div>`;
+                });
+                html += '</div>';
+            } else {
+                html += '<div style="color:#999;font-size:0.9rem;padding:1rem 0;">W\u00e4hlen Sie ein Stockwerk aus, um Details zu sehen.</div>';
+            }
+            panel.innerHTML = html;
+        }
+
+        // =========================================================
+        // EBENAU – 3 Einfamilienh\u00e4user, 2 Ebenen (Base + Upper)
+        // =========================================================
+        const ebenauHouses = {
+            A: {
+                name: 'Haus A', description: 'Einfamilienhaus',
+                rooms: '5.5', price: "CHF 1'475'000.\u2013", wohnflaeche: '147 m\u00b2',
+                nutzflaeche: '255 m\u00b2', grundstueck: '783 m\u00b2', status: 'reserved'
+            },
+            B: {
+                name: 'Haus B', description: 'Einfamilienhaus',
+                rooms: '5.5', price: "CHF 1'415'000.\u2013", wohnflaeche: '147 m\u00b2',
+                nutzflaeche: '255 m\u00b2', grundstueck: '643 m\u00b2', status: 'reserved'
+            },
+            C: {
+                name: 'Haus C', description: 'Einfamilienhaus',
+                rooms: '5.5', price: "CHF 1'485'000.\u2013", wohnflaeche: '147 m\u00b2',
+                nutzflaeche: '255 m\u00b2', grundstueck: '959 m\u00b2', status: 'reserved'
+            }
+        };
+
+        // Offset to push upper floor DOWN so it sits compactly on the base layer
+        const ebenauCompactOffset = 580;
+
+        // Hover zones for each house (in SVG viewBox coordinates 0 0 7200 3622)
+        const ebenauHoverZones = {
+            A: { x: 0, w: 2650 },
+            B: { x: 2650, w: 1700 },
+            C: { x: 4350, w: 2850 }
+        };
+
+        let svgDocEbenau = null;
+        let activeEbenauHouse = null;
+
+        const svgObjEbenau = document.getElementById('svg-ebenau');
+        svgObjEbenau.addEventListener('load', initEbenau);
+
+        function initEbenau() {
+            svgDocEbenau = svgObjEbenau.contentDocument;
+            if (!svgDocEbenau) return;
+            splitUpperFloorByHouse();
+            injectEbenauStyles();
+            addEbenauHoverZones();
+            bindEbenauNav();
+        }
+
+        // Split the Lifted_Upper_Floor children into per-house sub-groups.
+        // Elements are classified by their X-center coordinate.
+        // Elements spanning > 2000px (shared outlines) stay in a static group.
+        function splitUpperFloorByHouse() {
+            const ns = 'http://www.w3.org/2000/svg';
+            const upperGroup = svgDocEbenau.getElementById('Lifted_Upper_Floor');
+            if (!upperGroup) return;
+
+            const innerG = upperGroup.querySelector('g');
+            const container = innerG || upperGroup;
+            const children = Array.from(container.children);
+
+            // Create sub-groups
+            const groups = {
+                shared: svgDocEbenau.createElementNS(ns, 'g'),
+                A: svgDocEbenau.createElementNS(ns, 'g'),
+                B: svgDocEbenau.createElementNS(ns, 'g'),
+                C: svgDocEbenau.createElementNS(ns, 'g')
+            };
+            groups.shared.setAttribute('id', 'upper-shared');
+            groups.A.setAttribute('id', 'upper-A');
+            groups.B.setAttribute('id', 'upper-B');
+            groups.C.setAttribute('id', 'upper-C');
+
+            // Set compact offset on per-house groups
+            ['A', 'B', 'C'].forEach(k => {
+                groups[k].setAttribute('transform', `translate(0, ${ebenauCompactOffset})`);
+            });
+            // Shared elements also need the compact offset since they're part of
+            // the upper floor visually
+            groups.shared.setAttribute('transform', `translate(0, ${ebenauCompactOffset})`);
+
+            // Classify each element
+            children.forEach(el => {
+                const coords = getElementCoords(el);
+                if (!coords.length) {
+                    groups.shared.appendChild(el);
+                    return;
+                }
+                const xs = coords.map(c => c[0]);
+                const xmin = Math.min(...xs);
+                const xmax = Math.max(...xs);
+                const xrange = xmax - xmin;
+                const xcenter = (xmin + xmax) / 2;
+
+                if (xrange > 2000) {
+                    groups.shared.appendChild(el);
+                } else if (xcenter < 3690) {
+                    groups.A.appendChild(el);
+                } else if (xcenter < 5000) {
+                    groups.B.appendChild(el);
+                } else {
+                    groups.C.appendChild(el);
+                }
+            });
+
+            // Remove inner <g> if now empty
+            if (innerG && innerG.parentNode) {
+                innerG.parentNode.removeChild(innerG);
+            }
+
+            // Append sub-groups to the upper floor parent
+            upperGroup.appendChild(groups.shared);
+            upperGroup.appendChild(groups.A);
+            upperGroup.appendChild(groups.B);
+            upperGroup.appendChild(groups.C);
+        }
+
+        function getElementCoords(el) {
+            const tag = el.tagName;
+            if (tag === 'polygon') {
+                const pts = el.getAttribute('points');
+                if (!pts) return [];
+                const nums = pts.trim().split(/[\s,]+/);
+                const coords = [];
+                for (let i = 0; i < nums.length - 1; i += 2) {
+                    coords.push([parseFloat(nums[i]), parseFloat(nums[i + 1])]);
+                }
+                return coords;
+            } else if (tag === 'path') {
+                const d = el.getAttribute('d');
+                if (!d) return [];
+                const nums = d.match(/[-+]?\d*\.?\d+/g);
+                if (!nums || nums.length < 2) return [];
+                const coords = [];
+                for (let i = 0; i < nums.length - 1; i += 2) {
+                    coords.push([parseFloat(nums[i]), parseFloat(nums[i + 1])]);
+                }
+                return coords;
+            }
+            return [];
+        }
+
+        function injectEbenauStyles() {
+            const style = svgDocEbenau.createElementNS('http://www.w3.org/2000/svg', 'style');
+            style.textContent = `
+                #upper-A, #upper-B, #upper-C, #upper-shared {
+                    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.35s ease;
+                }
+                .ebenau-zone {
+                    fill: transparent;
+                    cursor: pointer;
+                }
+                #upper-A.highlight, #upper-B.highlight, #upper-C.highlight {
+                    filter: brightness(0.75) saturate(1.4);
+                }
+            `;
+            svgDocEbenau.querySelector('svg').prepend(style);
+        }
+
+        function addEbenauHoverZones() {
+            const svg = svgDocEbenau.querySelector('svg');
+            const ns = 'http://www.w3.org/2000/svg';
+            const tooltip = document.getElementById('tooltip-ebenau');
+            const houseLabels = { A: 'Haus A', B: 'Haus B', C: 'Haus C' };
+
+            const zoneGroup = svgDocEbenau.createElementNS(ns, 'g');
+            zoneGroup.setAttribute('id', 'hover-zones');
+            svg.appendChild(zoneGroup);
+
+            ['A', 'B', 'C'].forEach(key => {
+                const zone = ebenauHoverZones[key];
+                const rect = svgDocEbenau.createElementNS(ns, 'rect');
+                rect.setAttribute('x', zone.x);
+                rect.setAttribute('y', 0);
+                rect.setAttribute('width', zone.w);
+                rect.setAttribute('height', 3622);
+                rect.setAttribute('class', 'ebenau-zone');
+                rect.setAttribute('data-house', key);
+                zoneGroup.appendChild(rect);
+
+                rect.addEventListener('mouseenter', () => {
+                    // Exploded: lift this house's upper floor to natural SVG position
+                    const upperG = svgDocEbenau.getElementById(`upper-${key}`);
+                    if (upperG) {
+                        upperG.setAttribute('transform', 'translate(0, 0)');
+                        upperG.classList.add('highlight');
+                    }
+                    tooltip.textContent = houseLabels[key];
+                    tooltip.classList.add('visible');
+                    selectEbenauHouse(key);
+                });
+
+                rect.addEventListener('mousemove', e => {
+                    tooltip.style.left = (e.clientX + 12) + 'px';
+                    tooltip.style.top = (e.clientY - 30) + 'px';
+                });
+
+                rect.addEventListener('mouseleave', () => {
+                    // Compact: push back down
+                    const upperG = svgDocEbenau.getElementById(`upper-${key}`);
+                    if (upperG) {
+                        upperG.setAttribute('transform', `translate(0, ${ebenauCompactOffset})`);
+                        upperG.classList.remove('highlight');
+                    }
+                    tooltip.classList.remove('visible');
+                });
+            });
+        }
+
+        function bindEbenauNav() {
+            document.querySelectorAll('#nav-ebenau button').forEach(btn => {
+                btn.addEventListener('click', () => selectEbenauHouse(btn.dataset.building));
+            });
+        }
+
+        function selectEbenauHouse(houseKey) {
+            activeEbenauHouse = houseKey;
+            document.querySelectorAll('#nav-ebenau button').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.building === houseKey);
+            });
+            renderEbenauPanel(houseKey);
+        }
+
+        function renderEbenauPanel(houseKey) {
+            const house = ebenauHouses[houseKey];
+            const panel = document.getElementById('panel-content-ebenau');
+            let html = `<h2>${house.name}</h2><div class="subtitle">${house.description}</div>`;
+            html += `<div class="detail-section"><h3>\u00dcbersicht</h3>
+                <div style="background:#fafaf8;border-radius:6px;padding:1rem;margin-bottom:0.75rem;border:1px solid #eee;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                        <strong style="font-size:0.95rem;">${house.name}</strong>
+                        <span class="status-badge ${house.status}">${statusLabels[house.status]}</span>
+                    </div>
+                    <div class="detail-row"><span class="label">Zimmer</span><span class="value">${house.rooms}</span></div>
+                    <div class="detail-row"><span class="label">Preis</span><span class="value">${house.price}</span></div>
+                    <div class="detail-row"><span class="label">Wohnfl\u00e4che</span><span class="value">${house.wohnflaeche}</span></div>
+                    <div class="detail-row"><span class="label">Nutzfl\u00e4che</span><span class="value">${house.nutzflaeche}</span></div>
+                    <div class="detail-row"><span class="label">Grundst\u00fcckfl\u00e4che</span><span class="value">${house.grundstueck}</span></div>
+                </div>
+            </div>`;
+            html += `<div style="margin-top:1rem;padding:0.8rem;background:#f0f0ec;border-radius:4px;font-size:0.8rem;color:#666;">
+                Alle H\u00e4user verf\u00fcgen \u00fcber 2 Garagenpl\u00e4tze und 1 Besucherparkplatz.
+            </div>`;
+            panel.innerHTML = html;
+        }
+    </script>
+</body>
+
+</html>
