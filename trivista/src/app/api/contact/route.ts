@@ -90,7 +90,7 @@ export async function POST(request: Request) {
 
     const confirmationPromise = sendEmailWithRetry(
       {
-        from: 'Trivista <noreply@rhycasa.ch>',
+        from: 'Trivista <noreply@send.rhycasa.ch>',
         to: formData.email,
         replyTo: 'info@rhycasa.ch',
         subject: `Ihre Anfrage bei Trivista — Wir melden uns bei Ihnen`,
@@ -114,7 +114,7 @@ export async function POST(request: Request) {
 
     const notificationPromise = sendEmailWithRetry(
       {
-        from: 'Trivista <noreply@rhycasa.ch>',
+        from: 'Trivista <noreply@send.rhycasa.ch>',
         to: 'info@rhycasa.ch',
         subject: `Neue Kontaktanfrage Trivista: ${contactName}`,
         html: notificationHtml,

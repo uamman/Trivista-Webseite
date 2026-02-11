@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Mail, Phone, Globe, Send, CheckCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mail, Phone, Globe, Send, CheckCircle, ChevronDown } from "lucide-react";
 import { WHATSAPP } from "@/lib/constants";
 import Button from "@/components/ui/Button";
 
@@ -21,6 +21,26 @@ export default function KontaktPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [anredeOpen, setAnredeOpen] = useState(false);
+  const anredeRef = useRef<HTMLDivElement>(null);
+
+  const anredeOptions = [
+    { value: "herr", label: "Herr" },
+    { value: "frau", label: "Frau" },
+  ];
+
+  const selectedAnredeLabel = anredeOptions.find((o) => o.value === formState.anrede)?.label;
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (anredeRef.current && !anredeRef.current.contains(e.target as Node)) {
+        setAnredeOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -128,16 +148,64 @@ export default function KontaktPage() {
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-5">
                     {/* Anrede */}
-                    <select
-                      id="anrede"
-                      value={formState.anrede}
-                      onChange={(e) => setFormState({ ...formState, anrede: e.target.value })}
-                      className={`${inputClass} appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23696969%22%20d%3D%22M2%204l4%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px] bg-[right_16px_center] bg-no-repeat pr-10`}
-                    >
-                      <option value="">Anrede</option>
-                      <option value="herr">Herr</option>
-                      <option value="frau">Frau</option>
-                    </select>
+                    <div ref={anredeRef} className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setAnredeOpen((prev) => !prev)}
+                        className={`${inputClass} flex items-center justify-between text-left ${
+                          formState.anrede ? "text-text" : "text-text/50"
+                        }`}
+                      >
+                        <span>{selectedAnredeLabel || "Anrede"}</span>
+                        <ChevronDown
+                          size={16}
+                          className={`text-text/50 transition-transform duration-200 ${
+                            anredeOpen ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+                      <AnimatePresence>
+                        {anredeOpen && (
+                          <motion.ul
+                            initial={{ opacity: 0, y: -4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -4 }}
+                            transition={{ duration: 0.15 }}
+                            className="absolute z-20 mt-1.5 w-full overflow-hidden rounded-[10px] border border-border bg-white shadow-[0px_10px_20px_0px_rgba(0,0,0,0.08)]"
+                          >
+                            {anredeOptions.map((option) => (
+                              <li key={option.value}>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setFormState({ ...formState, anrede: option.value });
+                                    setAnredeOpen(false);
+                                  }}
+                                  className={`flex w-full items-center gap-3 px-4 py-3 text-left text-base transition-colors hover:bg-surface ${
+                                    formState.anrede === option.value
+                                      ? "font-bold text-primary"
+                                      : "text-text"
+                                  }`}
+                                >
+                                  <span
+                                    className={`flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
+                                      formState.anrede === option.value
+                                        ? "border-primary bg-primary"
+                                        : "border-border"
+                                    }`}
+                                  >
+                                    {formState.anrede === option.value && (
+                                      <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                                    )}
+                                  </span>
+                                  {option.label}
+                                </button>
+                              </li>
+                            ))}
+                          </motion.ul>
+                        )}
+                      </AnimatePresence>
+                    </div>
 
                     {/* Vorname + Nachname */}
                     <div className="grid gap-5 sm:grid-cols-2">
