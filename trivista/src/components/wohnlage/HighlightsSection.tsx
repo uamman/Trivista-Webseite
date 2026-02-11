@@ -22,22 +22,34 @@ export default function HighlightsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.15 }}
-              className="group cursor-default rounded-[10px] border border-border bg-white p-6 text-center md:p-8 shadow-[0px_10px_10px_0px_rgba(0,0,0,0.05)] transition-all duration-300 hover:border-primary/40 hover:bg-primary hover:shadow-[0px_10px_20px_0px_rgba(38,65,60,0.15)]"
+              className="group relative cursor-default overflow-hidden rounded-[10px] border border-border bg-white text-center shadow-[0px_10px_10px_0px_rgba(0,0,0,0.05)] transition-all duration-500 hover:border-primary/20 hover:shadow-[0px_16px_32px_0px_rgba(38,65,60,0.12)]"
             >
-              <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center transition-all duration-300 group-hover:[filter:brightness(0)_saturate(100%)_invert(44%)_sepia(22%)_saturate(1838%)_hue-rotate(314deg)_brightness(89%)_contrast(88%)]">
-                <Image
-                  src={highlight.icon}
-                  alt={highlight.title}
-                  width={40}
-                  height={40}
-                />
+              {/* Top accent bar */}
+              <div className="h-1 w-full bg-gradient-to-r from-primary via-accent to-primary opacity-60 transition-opacity duration-500 group-hover:opacity-100" />
+
+              <div className="p-6 md:p-8">
+                {/* Icon with background circle */}
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-surface transition-all duration-500 group-hover:bg-primary/10 group-hover:scale-110">
+                  <Image
+                    src={highlight.icon}
+                    alt={highlight.title}
+                    width={36}
+                    height={36}
+                    className="transition-transform duration-500 group-hover:scale-110"
+                  />
+                </div>
+
+                <h3 className="mb-3 text-[22px] font-normal text-text-dark">
+                  {highlight.title}
+                </h3>
+
+                {/* Small divider */}
+                <div className="mx-auto mb-4 h-0.5 w-10 rounded-full bg-accent/40 transition-all duration-500 group-hover:w-16 group-hover:bg-accent" />
+
+                <p className="text-base leading-relaxed text-text">
+                  {highlight.description}
+                </p>
               </div>
-              <h3 className="mb-3 text-[22px] font-normal text-text-dark transition-colors duration-300 group-hover:text-white">
-                {highlight.title}
-              </h3>
-              <p className="text-base leading-relaxed text-text transition-colors duration-300 group-hover:text-white/80">
-                {highlight.description}
-              </p>
             </motion.div>
           ))}
         </div>

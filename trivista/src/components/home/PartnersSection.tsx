@@ -40,20 +40,24 @@ export default function PartnersSection() {
 
               {/* Contact icons */}
               <div className="mt-4 flex items-center justify-center gap-3">
-                <a
-                  href={`mailto:info@${partner.url.replace("https://", "")}`}
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/30 text-white/70 transition-colors hover:border-white hover:text-white"
-                  aria-label={`E-Mail an ${partner.name}`}
-                >
-                  <Mail size={16} />
-                </a>
-                <a
-                  href="tel:+41717637500"
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/30 text-white/70 transition-colors hover:border-white hover:text-white"
-                  aria-label={`${partner.name} anrufen`}
-                >
-                  <Phone size={16} />
-                </a>
+                {partner.showAllContacts && (
+                  <>
+                    <a
+                      href={`mailto:info@${partner.url.replace("https://", "")}`}
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/30 text-white/70 transition-colors hover:border-white hover:text-white"
+                      aria-label={`E-Mail an ${partner.name}`}
+                    >
+                      <Mail size={16} />
+                    </a>
+                    <a
+                      href="tel:+41717637500"
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/30 text-white/70 transition-colors hover:border-white hover:text-white"
+                      aria-label={`${partner.name} anrufen`}
+                    >
+                      <Phone size={16} />
+                    </a>
+                  </>
+                )}
                 <a
                   href={partner.url}
                   target="_blank"

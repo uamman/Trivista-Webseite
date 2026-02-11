@@ -1,21 +1,67 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
+
 export default function HeroSection() {
+  const [videoReady, setVideoReady] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Eagerly try to play as soon as component mounts
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const tryPlay = () => {
+      video.play().then(() => setVideoReady(true)).catch(() => {});
+    };
+
+    // If already has enough data, play immediately
+    if (video.readyState >= 3) {
+      tryPlay();
+      return;
+    }
+
+    video.addEventListener("canplay", tryPlay, { once: true });
+    return () => video.removeEventListener("canplay", tryPlay);
+  }, []);
+
   return (
     <section className="relative flex min-h-[700px] items-center justify-center overflow-hidden bg-primary md:h-screen">
-      {/* Video Background */}
+      {/* Preload video for faster start */}
+      <link rel="preload" href="/video/aussicht-animation.mp4" as="video" type="video/mp4" />
+
+      {/* Poster Image with Ken Burns zoom — visible until video loads */}
+      <div
+        className={`absolute inset-0 transition-opacity duration-700 ${
+          videoReady ? "opacity-0" : "opacity-100"
+        }`}
+      >
+        <Image
+          src="/images/gallery/aussen/1.webp"
+          alt="Trivista Kobelwald"
+          fill
+          priority
+          className="animate-[kenburns_20s_ease-in-out_infinite_alternate] object-cover"
+        />
+      </div>
+
+      {/* Video Background — fades in when ready */}
       <video
-        autoPlay
+        ref={videoRef}
         muted
         loop
         playsInline
         preload="auto"
-        poster="/images/hero/video-bg.webp"
-        className="absolute inset-0 h-full w-full object-cover"
+        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+          videoReady ? "opacity-100" : "opacity-0"
+        }`}
       >
         <source src="/video/aussicht-animation.mp4" type="video/mp4" />
       </video>
 
       {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/15" />
+      <div className="absolute inset-0 bg-black/30" />
 
       {/* Content */}
       <div className="relative z-10 w-[80%] max-w-[1140px] px-6 text-center animate-[fadeUp_0.8s_ease-out_both]">
