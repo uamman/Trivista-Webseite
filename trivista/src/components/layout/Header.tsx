@@ -228,6 +228,7 @@ export default function Header() {
                         alt={WHATSAPP.name}
                         fill
                         className="object-cover object-top"
+                        sizes="48px"
                       />
                     </div>
                     <div>

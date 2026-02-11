@@ -51,6 +51,7 @@ export default function AngebotPage() {
           alt="Trivista Angebot"
           fill
           className="object-cover"
+          sizes="100vw"
           priority
         />
         <div className="absolute inset-0 bg-black/40" />
@@ -317,6 +318,7 @@ export default function AngebotPage() {
                     alt={doc.label}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 768px) 50vw, 25vw"
                   />
                   {/* Download banner floating above image */}
                   <div className="absolute inset-x-4 bottom-4 flex items-center justify-between rounded-[8px] bg-white/95 px-5 py-3 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:bg-white">

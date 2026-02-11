@@ -88,6 +88,7 @@ export default function KontaktPage() {
           alt="Trivista Kontakt"
           fill
           className="object-cover"
+          sizes="100vw"
           priority
         />
         <div className="absolute inset-0 bg-black/40" />
@@ -324,6 +325,7 @@ export default function KontaktPage() {
                       alt={WHATSAPP.name}
                       fill
                       className="object-cover object-top"
+                      sizes="80px"
                     />
                   </div>
                   <div>
@@ -364,6 +366,7 @@ export default function KontaktPage() {
                         alt="Rhycasa AG"
                         fill
                         className="object-contain object-left"
+                        sizes="144px"
                       />
                     </div>
                   </div>
