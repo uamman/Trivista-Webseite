@@ -406,7 +406,7 @@ export default function KontaktPage() {
       </section>
 
       {/* CTA Banner */}
-      <section className="px-6 py-12 md:py-[70px]">
+      <section className="bg-surface px-6 py-12 md:py-[70px]">
         <div className="mx-auto max-w-[1140px]">
           <div className="relative overflow-hidden rounded-[10px] bg-primary px-6 py-8 md:px-16 md:py-14">
             {/* Animated decorative circles */}

@@ -92,6 +92,16 @@ html {
   background-color: var(--color-border);
 }
 
+/* Ken Burns zoom for hero poster image */
+@keyframes kenburns {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.08);
+  }
+}
+
 /* Building Navigator SVG interactivity */
 .building-navigator .apartment-level {
   cursor: pointer;

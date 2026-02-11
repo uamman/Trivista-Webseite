@@ -72,6 +72,7 @@ export const PARTNERS = [
     address: "Bahnhofstrasse 28, 9443 Widnau",
     url: "https://rhycasa.ch",
     logo: "/images/logo/rhycasa-white.svg",
+    showAllContacts: true,
   },
   {
     name: "Archraum AG",
@@ -79,6 +80,7 @@ export const PARTNERS = [
     address: "Rorschacherstrasse 24, 9450 Altstätten SG",
     url: "https://archraum.ch",
     logo: "/images/partners/archraum.svg",
+    showAllContacts: false,
   },
   {
     name: "Stieger Baugeschäft AG",
@@ -86,6 +88,7 @@ export const PARTNERS = [
     address: "Im Lehen 11, 9463 Oberriet SG",
     url: "https://stiegerbau.ch",
     logo: "/images/partners/stieger.svg",
+    showAllContacts: false,
   },
 ];
 

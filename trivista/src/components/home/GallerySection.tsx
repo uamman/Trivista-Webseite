@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import TabSwitcher from "@/components/ui/TabSwitcher";
@@ -25,63 +24,23 @@ const GALLERY_IMAGES = {
   })),
 };
 
-const slideVariants = {
-  enter: (dir: number) => ({
-    x: dir > 0 ? "100%" : "-100%",
-    opacity: 0,
-  }),
-  center: {
-    x: 0,
-    opacity: 1,
-  },
-  exit: (dir: number) => ({
-    x: dir > 0 ? "-100%" : "100%",
-    opacity: 0,
-  }),
-};
-
 export default function GallerySection() {
   const [activeTab, setActiveTab] = useState("innen");
-  const [page, setPage] = useState(0);
-  const [[slideKey, direction], setSlide] = useState([0, 0]);
-
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 639px)");
-    setIsMobile(mq.matches);
-    const handler = (e: MediaQueryListEvent) => {
-      setIsMobile(e.matches);
-      setPage(0);
-      setSlide([Date.now(), 0]);
-    };
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
+  const [index, setIndex] = useState(0);
 
   const images = GALLERY_IMAGES[activeTab as keyof typeof GALLERY_IMAGES];
-  const perView = isMobile ? 1 : 2;
-  const totalPages = Math.ceil(images.length / perView);
-
-  const currentImages = images.slice(page * perView, page * perView + perView);
+  // On desktop we show 2 images, so max index is length - 2
+  // On mobile we show 1, so max index is length - 1
+  // We handle this with CSS (hide second image on mobile)
+  const maxIndex = Math.max(0, images.length - 2);
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
-    setPage(0);
-    setSlide([Date.now(), 0]);
+    setIndex(0);
   };
 
-  const paginate = (dir: number) => {
-    const next = (page + dir + totalPages) % totalPages;
-    setPage(next);
-    setSlide([Date.now(), dir]);
-  };
-
-  const goToPage = (i: number) => {
-    if (i === page) return;
-    setSlide([Date.now(), i > page ? 1 : -1]);
-    setPage(i);
-  };
+  const prev = () => setIndex((i) => Math.max(0, i - 1));
+  const next = () => setIndex((i) => Math.min(maxIndex, i + 1));
 
   return (
     <section className="px-6 py-12 md:py-[70px]">
@@ -99,64 +58,64 @@ export default function GallerySection() {
         <div className="relative">
           {/* Navigation Arrows */}
           <button
-            onClick={() => paginate(-1)}
-            className="absolute top-1/2 left-2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-primary shadow-lg backdrop-blur-sm transition-all hover:bg-white hover:shadow-xl md:-left-6"
+            onClick={prev}
+            disabled={index === 0}
+            className="absolute top-1/2 left-2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-primary shadow-lg backdrop-blur-sm transition-all hover:bg-white hover:shadow-xl disabled:opacity-30 disabled:hover:shadow-lg md:-left-6"
             aria-label="Zurück"
           >
             <ChevronLeft size={20} />
           </button>
           <button
-            onClick={() => paginate(1)}
-            className="absolute top-1/2 right-2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-primary shadow-lg backdrop-blur-sm transition-all hover:bg-white hover:shadow-xl md:-right-6"
+            onClick={next}
+            disabled={index >= maxIndex}
+            className="absolute top-1/2 right-2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-primary shadow-lg backdrop-blur-sm transition-all hover:bg-white hover:shadow-xl disabled:opacity-30 disabled:hover:shadow-lg md:-right-6"
             aria-label="Weiter"
           >
             <ChevronRight size={20} />
           </button>
 
-          {/* Slides */}
-          <div className="relative overflow-hidden">
-            <AnimatePresence initial={false} custom={direction} mode="popLayout">
-              <motion.div
-                key={slideKey}
-                custom={direction}
-                variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ duration: 0.45, ease: [0.25, 0.1, 0.25, 1] }}
-                className="grid grid-cols-1 gap-4 sm:grid-cols-2"
-              >
-                {currentImages.map((image) => (
-                  <div
-                    key={image.id}
-                    className="group relative aspect-[4/3] overflow-hidden rounded-[10px]"
-                  >
-                    <Image
-                      src={image.src}
-                      alt={image.alt}
-                      fill
-                      sizes="(max-width: 640px) 100vw, 50vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                ))}
-              </motion.div>
-            </AnimatePresence>
+          {/* Sliding Track */}
+          <div className="overflow-hidden rounded-[10px]">
+            <div
+              className="flex gap-4 transition-transform duration-500 ease-out"
+              style={{
+                // Each image is 50% minus half the gap (calc(50% - 8px))
+                // Shift by index * (50% + half gap)
+                transform: `translateX(calc(-${index} * (50% + 8px)))`,
+              }}
+            >
+              {images.map((image) => (
+                <div
+                  key={image.id}
+                  className="relative aspect-[4/3] w-full shrink-0 overflow-hidden rounded-[10px] sm:w-[calc(50%-8px)]"
+                >
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-500 hover:scale-105"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Pagination Dots */}
           <div className="mt-6 flex justify-center gap-2">
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i}
-                onClick={() => goToPage(i)}
-                className={`h-2.5 rounded-full transition-all duration-300 ${
-                  i === page
-                    ? "w-8 bg-primary"
-                    : "w-2.5 bg-border hover:bg-primary/40"
-                }`}
-                aria-label={`Seite ${i + 1}`}
-              />
+            {images.map((_, i) => (
+              i <= maxIndex && (
+                <button
+                  key={i}
+                  onClick={() => setIndex(i)}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${
+                    i === index
+                      ? "w-8 bg-primary"
+                      : "w-2.5 bg-border hover:bg-primary/40"
+                  }`}
+                  aria-label={`Bild ${i + 1}`}
+                />
+              )
             ))}
           </div>
         </div>
