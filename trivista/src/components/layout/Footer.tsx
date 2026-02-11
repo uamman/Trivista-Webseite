@@ -6,23 +6,23 @@ export default function Footer() {
   const filteredLinks = SOCIAL_LINKS.filter((l) => l.label !== "YouTube");
 
   return (
-    <footer className="bg-primary text-white">
+    <footer className="bg-[#325A53] text-white">
       <div className="mx-auto grid max-w-[1140px] grid-cols-1 items-center gap-4 px-6 py-5 md:grid-cols-3">
         {/* Left: Legal links */}
         <div className="flex justify-center gap-6 text-sm md:justify-start">
-          <Link href="/impressum/" className="transition-colors hover:text-coral">
+          <Link href="/impressum/" className="text-white/80 transition-colors hover:text-white">
             Impressum
           </Link>
           <Link
             href="/datenschutzerklaerung/"
-            className="transition-colors hover:text-coral"
+            className="text-white/80 transition-colors hover:text-white"
           >
             Datenschutzerklärung
           </Link>
         </div>
 
         {/* Center: Copyright */}
-        <p className="text-center text-sm text-white/70">
+        <p className="text-center text-sm text-white/60">
           &copy; 2026 Rhycasa AG
         </p>
 
@@ -34,7 +34,7 @@ export default function Footer() {
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex h-8 w-8 items-center justify-center"
+              className="group flex h-8 w-8 items-center justify-center opacity-70 transition-opacity hover:opacity-100"
               aria-label={link.label}
             >
               <Image
@@ -42,7 +42,7 @@ export default function Footer() {
                 alt={link.label}
                 width={18}
                 height={18}
-                className="brightness-0 invert transition-all group-hover:[filter:brightness(0)_saturate(100%)_invert(44%)_sepia(22%)_saturate(1838%)_hue-rotate(314deg)_brightness(89%)_contrast(88%)]"
+                className="brightness-0 invert"
               />
             </a>
           ))}
