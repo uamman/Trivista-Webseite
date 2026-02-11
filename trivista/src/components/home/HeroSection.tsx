@@ -42,6 +42,7 @@ export default function HeroSection() {
           alt="Trivista Kobelwald"
           fill
           priority
+          sizes="100vw"
           className="animate-[kenburns_20s_ease-in-out_infinite_alternate] object-cover"
         />
       </div>
