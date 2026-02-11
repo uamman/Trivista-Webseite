@@ -12,8 +12,8 @@ export default function SectionHeading({
   return (
     <div className="mb-12 text-center">
       <h2
-        className={`text-3xl font-light tracking-wide md:text-4xl ${
-          light ? "text-white" : "text-primary"
+        className={`text-3xl font-normal md:text-[44px] md:leading-tight ${
+          light ? "text-white" : "text-text-dark"
         }`}
       >
         {title}
@@ -21,13 +21,12 @@ export default function SectionHeading({
       {subtitle && (
         <p
           className={`mt-4 text-lg ${
-            light ? "text-white/70" : "text-text-light"
+            light ? "text-white/70" : "text-text"
           }`}
         >
           {subtitle}
         </p>
       )}
-      <div className="mx-auto mt-6 h-px w-16 bg-secondary" />
     </div>
   );
 }

@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
-  <rect width="800" height="500" fill="#f0fff4"/>
-  <rect x="50" y="50" width="700" height="400" fill="none" stroke="#44aa66" stroke-width="2" stroke-dasharray="10,10" rx="8"/>
-  <text x="400" y="230" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" fill="#228844">Verkehr</text>
-  <text x="400" y="270" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" fill="#44aa66">Bus, Bahnhof Oberriet, Autobahn</text>
-  <text x="400" y="300" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#66cc88">Platzhalter — durch WordPress-Bild ersetzen</text>
-</svg>

@@ -1,121 +1,99 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { Check, Circle } from "lucide-react";
+import { Check } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { MILESTONES } from "@/lib/constants";
 
 export default function MilestonesTimeline() {
   return (
-    <section className="bg-primary px-6 py-24">
-      <div className="mx-auto max-w-6xl">
+    <section className="px-6 py-12 md:py-[70px]">
+      <div className="mx-auto max-w-[1140px]">
         <SectionHeading
           title="Meilensteine"
           subtitle="Der Weg zu Ihrem neuen Zuhause"
-          light
         />
 
-        {/* Desktop: Horizontal */}
-        <div className="hidden md:block">
-          <div className="relative">
-            {/* Line */}
-            <div className="absolute top-6 left-0 h-px w-full bg-white/20" />
+        <div className="grid items-center gap-16 md:grid-cols-2">
+          {/* Left: Large image */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative aspect-[4/3] overflow-hidden rounded-[10px]"
+          >
+            <Image
+              src="/images/gallery/aussen/2.webp"
+              alt="Trivista Gebäude"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </motion.div>
 
-            <div className="flex justify-between">
-              {MILESTONES.map((milestone, index) => (
-                <motion.div
-                  key={milestone.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="relative flex flex-col items-center"
-                >
-                  {/* Dot */}
-                  <div
-                    className={`relative z-10 flex h-12 w-12 items-center justify-center rounded-full border-2 ${
-                      milestone.status === "completed"
-                        ? "border-secondary bg-secondary"
-                        : milestone.status === "active"
-                          ? "border-secondary bg-transparent"
-                          : "border-white/30 bg-transparent"
-                    }`}
-                  >
-                    {milestone.status === "completed" ? (
-                      <Check size={20} className="text-white" />
-                    ) : (
-                      <Circle
-                        size={8}
-                        className={
-                          milestone.status === "active"
-                            ? "fill-secondary text-secondary"
-                            : "fill-white/30 text-white/30"
-                        }
-                      />
-                    )}
-                  </div>
-
-                  {/* Label */}
-                  <p
-                    className={`mt-4 text-center text-sm ${
-                      milestone.status === "completed"
-                        ? "font-medium text-secondary"
-                        : milestone.status === "active"
-                          ? "font-medium text-white"
-                          : "text-white/50"
-                    }`}
-                  >
-                    {milestone.label}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile: Vertical */}
-        <div className="md:hidden">
-          <div className="relative ml-6">
+          {/* Right: Vertical timeline */}
+          <div className="relative pl-10 md:pl-12">
             {/* Vertical line */}
-            <div className="absolute top-0 left-0 h-full w-px bg-white/20" />
+            <div className="absolute top-2 bottom-2 left-[19px] w-px bg-border" />
 
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-10">
               {MILESTONES.map((milestone, index) => (
                 <motion.div
                   key={milestone.label}
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={{ opacity: 0, x: 20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="relative flex items-center gap-4"
+                  className="relative flex items-center gap-5"
                 >
-                  {/* Dot */}
+                  {/* Dot on the line */}
                   <div
-                    className={`relative z-10 -ml-3 flex h-6 w-6 items-center justify-center rounded-full border-2 ${
+                    className={`absolute -left-10 z-10 flex h-10 w-10 md:-left-12 items-center justify-center rounded-full border-2 ${
                       milestone.status === "completed"
-                        ? "border-secondary bg-secondary"
+                        ? "border-primary bg-primary"
                         : milestone.status === "active"
-                          ? "border-secondary bg-transparent"
-                          : "border-white/30 bg-transparent"
+                          ? "border-primary bg-white"
+                          : "border-border bg-white"
                     }`}
                   >
-                    {milestone.status === "completed" && (
-                      <Check size={12} className="text-white" />
+                    {milestone.status === "completed" ? (
+                      <Check size={18} className="text-white" />
+                    ) : milestone.status === "active" ? (
+                      <div className="h-3 w-3 rounded-full bg-primary" />
+                    ) : (
+                      <div className="h-3 w-3 rounded-full bg-border" />
                     )}
                   </div>
 
-                  {/* Label */}
-                  <p
-                    className={`text-sm ${
-                      milestone.status === "completed"
-                        ? "font-medium text-secondary"
-                        : milestone.status === "active"
-                          ? "font-medium text-white"
-                          : "text-white/50"
-                    }`}
-                  >
-                    {milestone.label}
-                  </p>
+                  {/* Icon + Label */}
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center">
+                      <Image
+                        src={milestone.icon}
+                        alt={milestone.label}
+                        width={28}
+                        height={28}
+                        className={
+                          milestone.status === "completed" || milestone.status === "active"
+                            ? "opacity-80"
+                            : "opacity-30"
+                        }
+                      />
+                    </div>
+                    <p
+                      className={`text-lg ${
+                        milestone.status === "completed"
+                          ? "font-bold text-primary"
+                          : milestone.status === "active"
+                            ? "font-bold text-text-dark"
+                            : "text-text/50"
+                      }`}
+                    >
+                      {milestone.label}
+                    </p>
+                  </div>
                 </motion.div>
               ))}
             </div>

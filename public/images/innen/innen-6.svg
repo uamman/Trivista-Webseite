@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
-  <rect width="800" height="600" fill="#e8e4df"/>
-  <rect x="50" y="50" width="700" height="500" fill="none" stroke="#999" stroke-width="2" stroke-dasharray="10,10" rx="8"/>
-  <text x="400" y="280" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" fill="#888">Innenansicht 6</text>
-  <text x="400" y="320" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" fill="#aaa">WordPress: wp-content/uploads/</text>
-  <text x="400" y="350" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#bbb">Bitte durch echtes Rendering ersetzen</text>
-</svg>

@@ -1,9 +1,10 @@
+import dynamic from "next/dynamic";
 import HeroSection from "@/components/home/HeroSection";
 import ProjectSection from "@/components/home/ProjectSection";
-import AdvantagesSection from "@/components/home/AdvantagesSection";
-import GallerySection from "@/components/home/GallerySection";
-import MilestonesTimeline from "@/components/home/MilestonesTimeline";
-import PartnersSection from "@/components/home/PartnersSection";
+
+const AdvantagesSection = dynamic(() => import("@/components/home/AdvantagesSection"));
+const GallerySection = dynamic(() => import("@/components/home/GallerySection"));
+const MilestonesTimeline = dynamic(() => import("@/components/home/MilestonesTimeline"));
 
 export default function HomePage() {
   return (
@@ -13,7 +14,6 @@ export default function HomePage() {
       <AdvantagesSection />
       <GallerySection />
       <MilestonesTimeline />
-      <PartnersSection />
     </>
   );
 }

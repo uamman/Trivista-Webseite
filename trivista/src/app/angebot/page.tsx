@@ -1,170 +1,401 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Building2, ChevronDown } from "lucide-react";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { FileText, Download, ChevronRight } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
-import Button from "@/components/ui/Button";
-import { APARTMENTS } from "@/lib/constants";
+import BuildingNavigator from "@/components/angebot/BuildingNavigator";
+import { APARTMENTS, DOCUMENTS, PARKING, PROCESS_STEPS } from "@/lib/constants";
+
+const STEP_ICONS: Record<string, string> = {
+  interesse: "/images/icons/process/interesse.svg",
+  finanzierung: "/images/icons/process/finanzierung.svg",
+  reservation: "/images/icons/process/reservation.svg",
+  kaufvertrag: "/images/icons/process/kaufvertrag.svg",
+  wohnungsuebergabe: "/images/icons/process/wohnungsuebergabe.svg",
+  nachbetreuung: "/images/icons/process/nachbetreuung.svg",
+};
 
 const STATUS_CONFIG = {
-  available: { label: "Verfügbar", color: "bg-green-500" },
-  reserved: { label: "Reserviert", color: "bg-amber-500" },
-  sold: { label: "Verkauft", color: "bg-red-500" },
+  available: { label: "Verfügbar", icon: "/images/icons/status/verfuegbar.svg" },
+  reserved: { label: "Reserviert", icon: "/images/icons/status/reserviert.svg" },
+  sold: { label: "Verkauft", icon: "/images/icons/status/verkauft.svg" },
 } as const;
 
 export default function AngebotPage() {
-  const [openBuilding, setOpenBuilding] = useState<string | null>("Haus A");
+  const [activeApartment, setActiveApartment] = useState<number | null>(null);
+  const [hoveredApartment, setHoveredApartment] = useState<number | null>(null);
+  const [openStep, setOpenStep] = useState<string | null>("interesse");
+
+  // The highlighted apartment is either hovered or clicked
+  const highlightedApt = hoveredApartment ?? activeApartment;
+
+  const handleApartmentClick = (id: number) => {
+    setActiveApartment(id);
+    // Scroll to table row
+    const row = document.getElementById(`apt-row-${id}`);
+    if (row) row.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  const handleRowClick = (id: number) => {
+    setActiveApartment(id);
+  };
 
   return (
     <>
       {/* Hero */}
-      <section className="relative flex h-[60vh] items-center justify-center overflow-hidden bg-primary">
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/70" />
-        <div className="absolute inset-0 opacity-10">
-          <div className="h-full w-full bg-[repeating-linear-gradient(60deg,transparent,transparent_35px,rgba(139,115,85,0.1)_35px,rgba(139,115,85,0.1)_70px)]" />
-        </div>
-        <div className="relative z-10 px-6 text-center">
-          <p className="mb-4 text-sm tracking-[0.4em] text-secondary uppercase">
-            Trivista
+      <section className="relative flex min-h-[700px] items-center justify-center overflow-hidden bg-primary md:min-h-[700px]">
+        <Image
+          src="/images/hero/Rietblick.0021-scaled.jpg"
+          alt="Trivista Angebot"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="relative z-10 w-[80%] px-6 text-center">
+          <p className="mb-4 text-[22px] font-light text-white [text-shadow:0px_0px_10px_rgba(38,65,60,0.21)]">
+            Trivista &middot; Angebot
           </p>
-          <h1 className="text-4xl font-light tracking-wide text-white md:text-6xl">
+          <h1 className="text-[30px] font-bold leading-[48px] text-white [text-shadow:0px_0px_10px_rgba(38,65,60,0.21)] md:text-[60px] md:leading-[70px]">
             Angebot
           </h1>
-          <div className="mx-auto mt-6 h-px w-24 bg-secondary" />
-          <p className="mt-6 text-lg font-light text-white/70">
-            12 exklusive Eigentumswohnungen in drei Gebäudekörpern
-          </p>
         </div>
       </section>
 
-      {/* Apartment Listings */}
-      <section className="px-6 py-24">
-        <div className="mx-auto max-w-4xl">
+      {/* Wohnungen */}
+      <section className="px-6 py-12 md:py-[70px]">
+        <div className="mx-auto max-w-[1140px]">
           <SectionHeading
-            title="Wohnungsangebot"
-            subtitle="Wählen Sie Ihr neues Zuhause"
+            title="Wohnungen"
+            subtitle="Entdecken Sie mit unserem interaktiven Navigator das exklusive Wohnungsangebot im Projekt Trivista und finden Sie Ihr perfektes Zuhause."
           />
 
-          {/* Legend */}
-          <div className="mb-12 flex flex-wrap justify-center gap-6">
-            {Object.entries(STATUS_CONFIG).map(([key, config]) => (
-              <div key={key} className="flex items-center gap-2">
-                <div className={`h-3 w-3 rounded-full ${config.color}`} />
-                <span className="text-sm text-text-light">{config.label}</span>
-              </div>
-            ))}
+          {/* Interactive Building SVG */}
+          <div className="mb-12">
+            <BuildingNavigator
+              activeApartment={highlightedApt}
+              onApartmentHover={setHoveredApartment}
+              onApartmentClick={handleApartmentClick}
+            />
           </div>
 
-          {/* Buildings */}
-          <div className="space-y-4">
-            {APARTMENTS.map((building) => (
-              <div
-                key={building.building}
-                className="overflow-hidden rounded-sm border border-gray-200"
-              >
-                {/* Building Header */}
-                <button
-                  onClick={() =>
-                    setOpenBuilding(
-                      openBuilding === building.building
-                        ? null
-                        : building.building
-                    )
-                  }
-                  className="flex w-full items-center justify-between bg-white px-6 py-5 transition-colors hover:bg-gray-50"
+          {/* Desktop Table */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+            className="hidden overflow-hidden rounded-[10px] border border-border md:block"
+          >
+            {/* Table Header */}
+            <div className="grid grid-cols-6 gap-0 bg-primary-medium px-6 py-3 text-sm font-bold tracking-wide text-white uppercase">
+              <span>Whg-Nr.</span>
+              <span>Geschoss</span>
+              <span className="text-right">Kaufpreis</span>
+              <span className="text-right">Zimmer</span>
+              <span className="text-right">Wohnfläche</span>
+              <span className="text-center">Grundriss</span>
+            </div>
+
+            {APARTMENTS.map((apt, index) => {
+              const status = STATUS_CONFIG[apt.status];
+              const isActive = highlightedApt === apt.id;
+              return (
+                <div
+                  key={apt.id}
+                  id={`apt-row-${apt.id}`}
+                  onClick={() => handleRowClick(apt.id)}
+                  onMouseEnter={() => setHoveredApartment(apt.id)}
+                  onMouseLeave={() => setHoveredApartment(null)}
+                  className={`grid cursor-pointer grid-cols-6 items-center gap-0 px-6 py-4 transition-all duration-200 ${
+                    isActive
+                      ? "bg-accent/20"
+                      : index % 2 === 1
+                        ? "bg-border/30"
+                        : "bg-white"
+                  } hover:bg-primary/5`}
                 >
-                  <div className="flex items-center gap-4">
-                    <Building2 className="text-secondary" size={24} />
-                    <div className="text-left">
-                      <h3 className="text-lg font-medium text-primary">
-                        {building.building}
-                      </h3>
-                      <p className="text-sm text-text-light">
-                        {building.units.length} Wohnungen &middot;{" "}
-                        {
-                          building.units.filter((u) => u.status === "available")
-                            .length
-                        }{" "}
-                        verfügbar
+                  <span className="font-bold text-text-dark">Wohnung {apt.id}</span>
+                  <span className="text-text">{apt.floor}</span>
+                  <span className="text-right text-text">{apt.price}</span>
+                  <span className="text-right text-text">{apt.rooms}</span>
+                  <span className="text-right text-text">{apt.area} m²</span>
+                  <span className="flex items-center justify-center">
+                    <span className="flex w-8 justify-center">
+                      {apt.status === "available" ? (
+                        <a
+                          href={apt.floorPlan}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="inline-flex items-center text-sm text-primary transition-colors hover:text-coral"
+                        >
+                          <FileText size={16} />
+                        </a>
+                      ) : null}
+                    </span>
+                    <span className="flex w-8 justify-center">
+                      <Image src={status.icon} alt={status.label} width={16} height={16} />
+                    </span>
+                  </span>
+                </div>
+              );
+            })}
+          </motion.div>
+
+          {/* Mobile Cards – sticky stack on scroll */}
+          <div className="md:hidden">
+            {APARTMENTS.map((apt, index) => {
+              const status = STATUS_CONFIG[apt.status];
+              const isActive = highlightedApt === apt.id;
+              return (
+                <div
+                  key={apt.id}
+                  id={`apt-row-${apt.id}`}
+                  onClick={() => handleRowClick(apt.id)}
+                  className={`sticky cursor-pointer rounded-[10px] border p-4 shadow-[0_-4px_12px_rgba(0,0,0,0.08)] transition-colors duration-200 ${
+                    isActive
+                      ? "border-accent bg-accent/10"
+                      : "border-border bg-white"
+                  }`}
+                  style={{
+                    top: `${64 + index * 6}px`,
+                    zIndex: index,
+                    marginBottom: index < APARTMENTS.length - 1 ? "12px" : "0",
+                  }}
+                >
+                  <div className="mb-3 flex items-center justify-between">
+                    <span className="text-lg font-bold text-text-dark">Wohnung {apt.id}</span>
+                    <div className="flex items-center gap-2">
+                      {apt.status === "available" ? (
+                        <a
+                          href={apt.floorPlan}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          className="text-primary transition-colors hover:text-coral"
+                        >
+                          <FileText size={18} />
+                        </a>
+                      ) : null}
+                      <Image src={status.icon} alt={status.label} width={16} height={16} />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-y-2 text-sm">
+                    <span className="text-text/60">Geschoss</span>
+                    <span className="text-right text-text">{apt.floor}</span>
+                    <span className="text-text/60">Kaufpreis</span>
+                    <span className="text-right font-bold text-text-dark">{apt.price}</span>
+                    <span className="text-text/60">Zimmer</span>
+                    <span className="text-right text-text">{apt.rooms}</span>
+                    <span className="text-text/60">Wohnfläche</span>
+                    <span className="text-right text-text">{apt.area} m²</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Legende */}
+          <div className="mt-4 flex flex-wrap items-center gap-6 px-2">
+            {Object.entries(STATUS_CONFIG).map(([key, val]) => (
+              <div key={key} className="flex items-center gap-2">
+                <Image src={val.icon} alt={val.label} width={14} height={14} />
+                <span className="text-sm text-text">{val.label}</span>
+              </div>
+            ))}
+            <div className="flex items-center gap-2">
+              <FileText size={14} className="text-primary" />
+              <span className="text-sm text-text">Grundriss (PDF)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Parkplätze */}
+      <section className="bg-surface px-6 py-12 md:py-[70px]">
+        <div className="mx-auto max-w-[1140px]">
+          <SectionHeading
+            title="Parkplätze"
+            subtitle="In der gemeinsamen Tiefgarage stehen 18 Parkplätze zur Verfügung. Die Parkplätze sind für E-Mobilität vorbereitet und können bei Bedarf mit einer Ladestation ausgestattet werden."
+          />
+
+          {/* Desktop Table */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4 }}
+            className="hidden overflow-hidden rounded-[10px] border border-border md:block"
+          >
+            <div className="grid grid-cols-5 gap-0 bg-primary-medium px-6 py-3 text-sm font-bold tracking-wide text-white uppercase">
+              <span>Typ</span>
+              <span className="text-right">Freie Plätze</span>
+              <span className="text-right">Kaufpreis</span>
+              <span className="text-center">Grundriss</span>
+              <span className="text-center">Status</span>
+            </div>
+            <div className="grid grid-cols-5 items-center gap-0 bg-white px-6 py-4">
+              <span className="font-bold text-text-dark">{PARKING.type}</span>
+              <span className="text-right text-text">{PARKING.available}</span>
+              <span className="text-right text-text">{PARKING.price}</span>
+              <span className="text-center">
+                <a
+                  href={PARKING.floorPlan}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-primary transition-colors hover:text-coral"
+                >
+                  Grundriss
+                </a>
+              </span>
+              <span className="flex justify-center">
+                <Image src="/images/icons/status/verfuegbar.svg" alt="Verfügbar" width={16} height={16} />
+              </span>
+            </div>
+          </motion.div>
+
+          {/* Mobile Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.3 }}
+            className="rounded-[10px] border border-border bg-white p-4 md:hidden"
+          >
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-lg font-bold text-text-dark">{PARKING.type}</span>
+              <Image src="/images/icons/status/verfuegbar.svg" alt="Verfügbar" width={16} height={16} />
+            </div>
+            <div className="grid grid-cols-2 gap-y-2 text-sm">
+              <span className="text-text/60">Freie Plätze</span>
+              <span className="text-right text-text">{PARKING.available}</span>
+              <span className="text-text/60">Kaufpreis</span>
+              <span className="text-right font-bold text-text-dark">{PARKING.price}</span>
+              <span className="text-text/60">Grundriss</span>
+              <span className="text-right">
+                <a
+                  href={PARKING.floorPlan}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-primary transition-colors hover:text-coral"
+                >
+                  PDF anzeigen
+                </a>
+              </span>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Downloads */}
+      <section className="px-6 py-12 md:py-[70px]">
+        <div className="mx-auto max-w-[1140px]">
+          <SectionHeading
+            title="Downloads"
+            subtitle="Detaillierte Informationen rund um das Neubauprojekt «Trivista»."
+          />
+
+          <div className="grid gap-6 sm:grid-cols-2">
+            {DOCUMENTS.map((doc, index) => (
+              <motion.a
+                key={doc.href}
+                href={doc.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className="group relative block overflow-hidden rounded-[10px] shadow-[0px_10px_10px_0px_rgba(0,0,0,0.11)] transition-shadow duration-300 hover:shadow-[0px_10px_25px_0px_rgba(0,0,0,0.16)]"
+              >
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <Image
+                    src={doc.image}
+                    alt={doc.label}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  {/* Download banner floating above image */}
+                  <div className="absolute inset-x-4 bottom-4 flex items-center justify-between rounded-[8px] bg-white/95 px-5 py-3 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:bg-white">
+                    <div>
+                      <span className="text-base font-bold text-text-dark">{doc.label}</span>
+                      <p className="mt-0.5 text-xs text-text/60">PDF-Dokument</p>
+                    </div>
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-white transition-colors duration-300 group-hover:bg-coral">
+                      <Download size={16} />
+                    </div>
+                  </div>
+                </div>
+              </motion.a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Weiteres Vorgehen */}
+      <section className="bg-surface px-6 py-12 md:py-[70px]">
+        <div className="mx-auto max-w-[1140px]">
+          <SectionHeading
+            title="Weiteres Vorgehen"
+            subtitle="Schritt für Schritt zu Ihrem neuen Zuhause – Wir begleiten Sie auf diesem Weg."
+          />
+
+          <div className="space-y-3">
+            {PROCESS_STEPS.map((step, index) => {
+              const isOpen = openStep === step.id;
+              return (
+                <motion.div
+                  key={step.id}
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.06 }}
+                  className="rounded-[10px]"
+                >
+                  <button
+                    onClick={() => setOpenStep(isOpen ? null : step.id)}
+                    className={`flex w-full items-center gap-5 rounded-[10px] px-6 py-5 text-left transition-all duration-500 ease-out ${
+                      isOpen
+                        ? "bg-primary text-white shadow-[0px_10px_20px_0px_rgba(0,0,0,0.12)]"
+                        : "bg-white shadow-[0px_2px_8px_0px_rgba(0,0,0,0.04)] hover:shadow-[0px_6px_20px_0px_rgba(0,0,0,0.08)]"
+                    }`}
+                  >
+                    <Image
+                      src={STEP_ICONS[step.id]}
+                      alt={step.title}
+                      width={28}
+                      height={28}
+                      className={`shrink-0 transition-all duration-500 ease-out ${isOpen ? "brightness-0 invert" : ""}`}
+                    />
+                    <span className={`flex-1 text-lg font-bold transition-colors duration-500 ease-out ${isOpen ? "text-white" : "text-text-dark"}`}>
+                      {step.title}
+                    </span>
+                    <ChevronRight
+                      size={20}
+                      className={`shrink-0 transition-transform duration-500 ease-out ${
+                        isOpen ? "rotate-90 text-white" : "text-text"
+                      }`}
+                    />
+                  </button>
+                  <div
+                    className="grid transition-[grid-template-rows,opacity] duration-500 ease-out"
+                    style={{
+                      gridTemplateRows: isOpen ? "1fr" : "0fr",
+                      opacity: isOpen ? 1 : 0,
+                    }}
+                  >
+                    <div className="overflow-hidden">
+                      <p className="px-6 pt-4 pb-2 leading-relaxed text-text">
+                        {step.content}
                       </p>
                     </div>
                   </div>
-                  <ChevronDown
-                    className={`text-text-light transition-transform ${
-                      openBuilding === building.building ? "rotate-180" : ""
-                    }`}
-                    size={20}
-                  />
-                </button>
-
-                {/* Units */}
-                <AnimatePresence>
-                  {openBuilding === building.building && (
-                    <motion.div
-                      initial={{ height: 0 }}
-                      animate={{ height: "auto" }}
-                      exit={{ height: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="border-t border-gray-100">
-                        {/* Table Header */}
-                        <div className="grid grid-cols-5 gap-4 bg-surface px-6 py-3 text-xs font-medium tracking-wider text-text-light uppercase">
-                          <span>Wohnung</span>
-                          <span>Geschoss</span>
-                          <span>Zimmer</span>
-                          <span>Fläche</span>
-                          <span>Status</span>
-                        </div>
-
-                        {/* Table Rows */}
-                        {building.units.map((unit, index) => {
-                          const status = STATUS_CONFIG[unit.status];
-                          return (
-                            <motion.div
-                              key={unit.id}
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: index * 0.05 }}
-                              className="grid grid-cols-5 items-center gap-4 border-t border-gray-50 px-6 py-4"
-                            >
-                              <span className="font-medium text-primary">
-                                {unit.id}
-                              </span>
-                              <span className="text-text-light">
-                                {unit.floor}
-                              </span>
-                              <span className="text-text-light">
-                                {unit.rooms}
-                              </span>
-                              <span className="text-text-light">
-                                {unit.area} m²
-                              </span>
-                              <span className="flex items-center gap-2">
-                                <span
-                                  className={`h-2.5 w-2.5 rounded-full ${status.color}`}
-                                />
-                                <span className="text-sm">{status.label}</span>
-                              </span>
-                            </motion.div>
-                          );
-                        })}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ))}
-          </div>
-
-          {/* CTA */}
-          <div className="mt-16 text-center">
-            <p className="mb-6 text-text-light">
-              Interessiert? Kontaktieren Sie uns für weitere Informationen und
-              Grundrisse.
-            </p>
-            <Button href="/kontakt/">Kontakt aufnehmen</Button>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>

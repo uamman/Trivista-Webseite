@@ -1,17 +1,22 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Send, CheckCircle } from "lucide-react";
-import SectionHeading from "@/components/ui/SectionHeading";
-import { WHATSAPP, PARTNERS } from "@/lib/constants";
+import { Mail, Phone, Globe, Send, CheckCircle } from "lucide-react";
+import { WHATSAPP } from "@/lib/constants";
+import Button from "@/components/ui/Button";
 
 export default function KontaktPage() {
   const [formState, setFormState] = useState({
-    name: "",
+    anrede: "",
+    vorname: "",
+    nachname: "",
     email: "",
-    phone: "",
-    message: "",
+    telefon: "",
+    bemerkung: "Ich interessiere mich für eine 4½-Zimmer-Wohnung im Erdgeschoss. Bitte kontaktieren Sie mich für eine Besichtigung.",
+    datenschutz: false,
   });
   const [submitted, setSubmitted] = useState(false);
 
@@ -21,207 +26,307 @@ export default function KontaktPage() {
     setSubmitted(true);
   };
 
-  const rhycasa = PARTNERS[0];
+  const inputClass =
+    "w-full rounded-[10px] border border-border px-4 py-3 text-base text-text placeholder:text-text/50 transition-colors focus:border-primary focus:outline-none";
 
   return (
     <>
       {/* Hero */}
-      <section className="relative flex h-[50vh] items-center justify-center overflow-hidden bg-primary">
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/70" />
-        <div className="relative z-10 px-6 text-center">
-          <p className="mb-4 text-sm tracking-[0.4em] text-secondary uppercase">
-            Trivista
+      <section className="relative flex min-h-[700px] items-center justify-center overflow-hidden bg-primary">
+        <Image
+          src="/images/hero/Rietblick.0022-scaled.jpg"
+          alt="Trivista Kontakt"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="relative z-10 w-[80%] px-6 text-center">
+          <p className="mb-4 text-[22px] font-light text-white [text-shadow:0px_0px_10px_rgba(38,65,60,0.21)]">
+            Trivista &middot; Kontakt
           </p>
-          <h1 className="text-4xl font-light tracking-wide text-white md:text-6xl">
+          <h1 className="text-[30px] font-bold leading-[48px] text-white [text-shadow:0px_0px_10px_rgba(38,65,60,0.21)] md:text-[60px] md:leading-[70px]">
             Kontakt
           </h1>
-          <div className="mx-auto mt-6 h-px w-24 bg-secondary" />
         </div>
       </section>
 
       {/* Contact Section */}
-      <section className="px-6 py-24">
-        <div className="mx-auto max-w-5xl">
-          <div className="grid gap-16 md:grid-cols-2">
-            {/* Contact Info */}
+      <section className="bg-surface px-6 py-12 md:py-[70px]">
+        <div className="mx-auto max-w-[1140px]">
+          {/* Section Heading */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="mb-14 text-center"
+          >
+            <p className="mb-3 text-sm font-bold tracking-widest text-primary/60 uppercase">
+              Kontakt
+            </p>
+            <h2 className="text-3xl font-normal text-text-dark md:text-[44px] md:leading-tight">
+              Wir freuen uns auf Sie
+            </h2>
+          </motion.div>
+
+          <div className="grid gap-10 lg:grid-cols-5">
+            {/* Left: Contact Form – 3 cols */}
             <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.6 }}
+              className="lg:col-span-3"
             >
-              <h2 className="mb-6 text-2xl font-light text-primary">
-                Sprechen Sie mit uns
-              </h2>
-              <p className="mb-8 leading-relaxed text-text-light">
-                Haben Sie Fragen zum Projekt Trivista? Wir beraten Sie gerne
-                persönlich und unverbindlich.
-              </p>
+              <div className="rounded-[10px] border border-border bg-white p-8 shadow-[0px_10px_10px_0px_rgba(0,0,0,0.04)] md:p-10">
+                <h3 className="mb-6 text-[22px] font-normal text-text-dark">
+                  Kontaktformular
+                </h3>
 
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary/10">
-                    <MapPin className="text-secondary" size={20} />
+                {submitted ? (
+                  <div className="flex flex-col items-center justify-center py-16 text-center">
+                    <CheckCircle className="mb-4 text-accent" size={48} />
+                    <h3 className="mb-2 text-[22px] font-normal text-text-dark">
+                      Vielen Dank!
+                    </h3>
+                    <p className="text-base text-text">
+                      Ihre Nachricht wurde gesendet. Wir melden uns in Kürze bei
+                      Ihnen.
+                    </p>
                   </div>
-                  <div>
-                    <p className="font-medium text-primary">{rhycasa.name}</p>
-                    <p className="text-sm text-text-light">{rhycasa.address}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary/10">
-                    <Phone className="text-secondary" size={20} />
-                  </div>
-                  <div>
-                    <p className="font-medium text-primary">{WHATSAPP.name}</p>
-                    <p className="text-sm text-text-light">{WHATSAPP.role}</p>
-                    <a
-                      href={`tel:${WHATSAPP.number}`}
-                      className="text-sm text-secondary hover:underline"
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-5">
+                    {/* Anrede */}
+                    <select
+                      id="anrede"
+                      value={formState.anrede}
+                      onChange={(e) => setFormState({ ...formState, anrede: e.target.value })}
+                      className={`${inputClass} appearance-none bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23696969%22%20d%3D%22M2%204l4%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px] bg-[right_16px_center] bg-no-repeat pr-10`}
                     >
-                      +41 71 763 75 00
-                    </a>
+                      <option value="">Anrede</option>
+                      <option value="herr">Herr</option>
+                      <option value="frau">Frau</option>
+                    </select>
+
+                    {/* Vorname + Nachname */}
+                    <div className="grid gap-5 sm:grid-cols-2">
+                      <input
+                        id="vorname"
+                        type="text"
+                        required
+                        placeholder="Vorname *"
+                        value={formState.vorname}
+                        onChange={(e) => setFormState({ ...formState, vorname: e.target.value })}
+                        className={inputClass}
+                      />
+                      <input
+                        id="nachname"
+                        type="text"
+                        required
+                        placeholder="Familienname *"
+                        value={formState.nachname}
+                        onChange={(e) => setFormState({ ...formState, nachname: e.target.value })}
+                        className={inputClass}
+                      />
+                    </div>
+
+                    {/* E-Mail + Telefon */}
+                    <div className="grid gap-5 sm:grid-cols-2">
+                      <input
+                        id="email"
+                        type="email"
+                        required
+                        placeholder="E-Mail *"
+                        value={formState.email}
+                        onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                        className={inputClass}
+                      />
+                      <input
+                        id="telefon"
+                        type="tel"
+                        required
+                        placeholder="Telefon *"
+                        value={formState.telefon}
+                        onChange={(e) => setFormState({ ...formState, telefon: e.target.value })}
+                        className={inputClass}
+                      />
+                    </div>
+
+                    {/* Bemerkung */}
+                    <textarea
+                      id="bemerkung"
+                      rows={4}
+                      placeholder="Bemerkung"
+                      value={formState.bemerkung}
+                      onChange={(e) => setFormState({ ...formState, bemerkung: e.target.value })}
+                      className={`${inputClass} resize-none`}
+                    />
+
+                    {/* Datenschutz Checkbox */}
+                    <div className="flex items-start gap-3">
+                      <input
+                        id="datenschutz"
+                        type="checkbox"
+                        required
+                        checked={formState.datenschutz}
+                        onChange={(e) => setFormState({ ...formState, datenschutz: e.target.checked })}
+                        className="mt-1 h-4 w-4 shrink-0 rounded border-border text-primary accent-primary"
+                      />
+                      <label htmlFor="datenschutz" className="text-sm text-text">
+                        Ich habe die{" "}
+                        <Link href="/datenschutzerklaerung/" className="text-primary underline">
+                          Datenschutzerklärung
+                        </Link>{" "}
+                        gelesen und akzeptiere die Hinweise.
+                      </label>
+                    </div>
+
+                    {/* Submit */}
+                    <div className="pt-2">
+                      <button
+                        type="submit"
+                        className="inline-flex items-center gap-2 rounded-[30px] bg-primary px-8 py-3 text-base font-bold text-white transition-all hover:bg-transparent hover:text-primary hover:shadow-[inset_0_0_0_2px_#26413C]"
+                      >
+                        Senden
+                        <Send size={16} />
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
+            </motion.div>
+
+            {/* Right: Ansprechpartner – 2 cols */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="lg:col-span-2"
+            >
+              <div className="rounded-[10px] border border-border bg-white p-8 shadow-[0px_10px_10px_0px_rgba(0,0,0,0.04)] md:p-10">
+                <h3 className="mb-6 text-[22px] font-normal text-text-dark">
+                  Ansprechpartner
+                </h3>
+
+                {/* Contact person */}
+                <div className="flex items-center gap-5">
+                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full">
+                    <Image
+                      src="/images/contact/ueli-ammann.webp"
+                      alt={WHATSAPP.name}
+                      fill
+                      className="object-cover object-top"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-lg font-bold text-text-dark">
+                      {WHATSAPP.name}
+                    </p>
+                    <p className="text-sm text-text">{WHATSAPP.role}</p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary/10">
-                    <Mail className="text-secondary" size={20} />
+                <div className="mt-6 space-y-3 border-t border-border pt-6">
+                  <a
+                    href={`tel:${WHATSAPP.number}`}
+                    className="flex items-center gap-3 text-[15px] text-text transition-colors hover:text-primary"
+                  >
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/8">
+                      <Phone size={14} className="text-primary" />
+                    </span>
+                    +41 71 763 75 00
+                  </a>
+                  <a
+                    href="mailto:info@rhycasa.ch"
+                    className="flex items-center gap-3 text-[15px] text-text transition-colors hover:text-primary"
+                  >
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/8">
+                      <Mail size={14} className="text-primary" />
+                    </span>
+                    info@rhycasa.ch
+                  </a>
+                </div>
+
+                {/* Rhycasa Divider */}
+                <div className="mt-8 border-t border-border pt-8">
+                  <div className="flex items-center gap-4">
+                    <div className="relative h-9 w-28 shrink-0">
+                      <Image
+                        src="/images/logo/rhycasa-color.svg"
+                        alt="Rhycasa AG"
+                        fill
+                        className="object-contain object-left"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium text-primary">E-Mail</p>
+                  <div className="mt-4">
+                    <p className="font-bold text-text-dark">Rhycasa AG</p>
+                    <p className="text-sm text-text">Bahnhofstrasse 28</p>
+                    <p className="text-sm text-text">9443 Widnau</p>
+                  </div>
+
+                  <div className="mt-5 flex gap-2">
                     <a
                       href="mailto:info@rhycasa.ch"
-                      className="text-sm text-secondary hover:underline"
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-text transition-all hover:border-primary hover:text-primary"
+                      aria-label="E-Mail"
                     >
-                      info@rhycasa.ch
+                      <Mail size={14} />
+                    </a>
+                    <a
+                      href="tel:+41717637500"
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-text transition-all hover:border-primary hover:text-primary"
+                      aria-label="Telefon"
+                    >
+                      <Phone size={14} />
+                    </a>
+                    <a
+                      href="https://rhycasa.ch"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-text transition-all hover:border-primary hover:text-primary"
+                      aria-label="Website"
+                    >
+                      <Globe size={14} />
                     </a>
                   </div>
                 </div>
               </div>
-
-              {/* WhatsApp CTA */}
-              <a
-                href={WHATSAPP.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-8 inline-flex items-center gap-3 rounded-full bg-[#25D366] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1da851]"
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                </svg>
-                Per WhatsApp kontaktieren
-              </a>
             </motion.div>
+          </div>
+        </div>
+      </section>
 
-            {/* Contact Form */}
+      {/* CTA Banner */}
+      <section className="px-6 py-12 md:py-[70px]">
+        <div className="mx-auto max-w-[1140px]">
+          <div className="relative overflow-hidden rounded-[10px] bg-primary px-6 py-8 md:px-16 md:py-14">
+            {/* Animated decorative circles */}
             <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              {submitted ? (
-                <div className="flex h-full flex-col items-center justify-center rounded-sm bg-surface p-12 text-center">
-                  <CheckCircle className="mb-4 text-green-500" size={48} />
-                  <h3 className="mb-2 text-xl font-medium text-primary">
-                    Vielen Dank!
-                  </h3>
-                  <p className="text-text-light">
-                    Ihre Nachricht wurde gesendet. Wir melden uns in Kürze bei
-                    Ihnen.
-                  </p>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <label
-                      htmlFor="name"
-                      className="mb-2 block text-sm font-medium text-primary"
-                    >
-                      Name *
-                    </label>
-                    <input
-                      id="name"
-                      type="text"
-                      required
-                      value={formState.name}
-                      onChange={(e) =>
-                        setFormState({ ...formState, name: e.target.value })
-                      }
-                      className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm transition-colors focus:border-secondary focus:outline-none"
-                      placeholder="Ihr vollständiger Name"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="mb-2 block text-sm font-medium text-primary"
-                    >
-                      E-Mail *
-                    </label>
-                    <input
-                      id="email"
-                      type="email"
-                      required
-                      value={formState.email}
-                      onChange={(e) =>
-                        setFormState({ ...formState, email: e.target.value })
-                      }
-                      className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm transition-colors focus:border-secondary focus:outline-none"
-                      placeholder="ihre@email.ch"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="phone"
-                      className="mb-2 block text-sm font-medium text-primary"
-                    >
-                      Telefon
-                    </label>
-                    <input
-                      id="phone"
-                      type="tel"
-                      value={formState.phone}
-                      onChange={(e) =>
-                        setFormState({ ...formState, phone: e.target.value })
-                      }
-                      className="w-full rounded-sm border border-gray-200 px-4 py-3 text-sm transition-colors focus:border-secondary focus:outline-none"
-                      placeholder="+41 xx xxx xx xx"
-                    />
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="message"
-                      className="mb-2 block text-sm font-medium text-primary"
-                    >
-                      Nachricht *
-                    </label>
-                    <textarea
-                      id="message"
-                      required
-                      rows={5}
-                      value={formState.message}
-                      onChange={(e) =>
-                        setFormState({ ...formState, message: e.target.value })
-                      }
-                      className="w-full resize-none rounded-sm border border-gray-200 px-4 py-3 text-sm transition-colors focus:border-secondary focus:outline-none"
-                      placeholder="Ihre Nachricht an uns..."
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="flex w-full items-center justify-center gap-2 rounded-sm bg-secondary px-8 py-3 text-sm font-medium tracking-widest text-white uppercase transition-colors hover:bg-secondary-light"
-                  >
-                    <Send size={16} />
-                    Nachricht senden
-                  </button>
-                </form>
-              )}
-            </motion.div>
+              animate={{ scale: [1, 1.15, 1], opacity: [0.03, 0.06, 0.03] }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-white"
+            />
+            <motion.div
+              animate={{ scale: [1, 1.2, 1], opacity: [0.03, 0.05, 0.03] }}
+              transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+              className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-white"
+            />
+            <div className="relative flex flex-col items-start gap-8 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="mb-3 text-xs font-bold tracking-[0.2em] text-white/60 uppercase">
+                  Wohnungsnavigator
+                </p>
+                <h2 className="text-2xl font-normal text-white md:text-[36px] md:leading-tight">
+                  Finden und reservieren Sie<br className="hidden md:block" /> Ihre Traumwohnung
+                </h2>
+              </div>
+              <Button href="/angebot/" variant="ghost">
+                Zum Wohnungsnavigator
+              </Button>
+            </div>
           </div>
         </div>
       </section>
