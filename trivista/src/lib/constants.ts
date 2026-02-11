@@ -56,13 +56,13 @@ export const ADVANTAGES = [
 ];
 
 export const MILESTONES = [
-  { label: "Projektierung", status: "completed" as const, icon: "/images/icons/milestones/projektierung.svg" },
-  { label: "Baubewilligung", status: "completed" as const, icon: "/images/icons/milestones/baubewilligung.svg" },
-  { label: "Vermarktungsstart", status: "completed" as const, icon: "/images/icons/milestones/vermarktungsstart.svg" },
-  { label: "Baubeginn", status: "active" as const, icon: "/images/icons/milestones/baubeginn.svg" },
-  { label: "Rohbau", status: "upcoming" as const, icon: "/images/icons/milestones/rohbau.svg" },
-  { label: "Innenausbau", status: "upcoming" as const, icon: "/images/icons/milestones/innenausbau.svg" },
-  { label: "Objektübergabe", status: "upcoming" as const, icon: "/images/icons/milestones/objektuebergabe.svg" },
+  { label: "Projektierung", status: "completed" as const, icon: "/images/icons/milestones/Projektierung.svg" },
+  { label: "Baubewilligung", status: "completed" as const, icon: "/images/icons/milestones/Baubewilligung.svg" },
+  { label: "Vermarktungsstart", status: "completed" as const, icon: "/images/icons/milestones/Vermarktungsstart.svg" },
+  { label: "Baubeginn", status: "active" as const, icon: "/images/icons/milestones/Baubeginn.svg" },
+  { label: "Rohbau", status: "upcoming" as const, icon: "/images/icons/milestones/Rohbau.svg" },
+  { label: "Innenausbau", status: "upcoming" as const, icon: "/images/icons/milestones/Innenausbau.svg" },
+  { label: "Objektübergabe", status: "upcoming" as const, icon: "/images/icons/milestones/Objektuebergabe.svg" },
 ];
 
 export const PARTNERS = [
