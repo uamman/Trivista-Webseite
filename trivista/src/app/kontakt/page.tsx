@@ -358,7 +358,7 @@ export default function KontaktPage() {
                 {/* Rhycasa Divider */}
                 <div className="mt-8 border-t border-border pt-8">
                   <div className="flex items-center gap-4">
-                    <div className="relative h-9 w-28 shrink-0">
+                    <div className="relative h-12 w-36 shrink-0">
                       <Image
                         src="/images/logo/rhycasa-color.svg"
                         alt="Rhycasa AG"
