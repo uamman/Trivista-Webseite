@@ -19,11 +19,41 @@ export default function KontaktPage() {
     datenschutz: false,
   });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Integrate with server action or form service
-    setSubmitted(true);
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          anrede: formState.anrede,
+          vorname: formState.vorname,
+          nachname: formState.nachname,
+          email: formState.email,
+          telefon: formState.telefon,
+          bemerkung: formState.bemerkung,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.");
+        return;
+      }
+
+      setSubmitted(true);
+    } catch {
+      setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputClass =
@@ -182,14 +212,22 @@ export default function KontaktPage() {
                       </label>
                     </div>
 
+                    {/* Error Message */}
+                    {error && (
+                      <div className="rounded-[10px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                        {error}
+                      </div>
+                    )}
+
                     {/* Submit */}
                     <div className="pt-2">
                       <button
                         type="submit"
-                        className="inline-flex items-center gap-2 rounded-[30px] bg-primary px-8 py-3 text-base font-bold text-white transition-all hover:bg-transparent hover:text-primary hover:shadow-[inset_0_0_0_2px_#26413C]"
+                        disabled={loading}
+                        className="inline-flex items-center gap-2 rounded-[30px] bg-primary px-8 py-3 text-base font-bold text-white transition-all hover:bg-transparent hover:text-primary hover:shadow-[inset_0_0_0_2px_#26413C] disabled:cursor-not-allowed disabled:opacity-60"
                       >
-                        Senden
-                        <Send size={16} />
+                        {loading ? "Wird gesendet..." : "Senden"}
+                        {!loading && <Send size={16} />}
                       </button>
                     </div>
                   </form>
