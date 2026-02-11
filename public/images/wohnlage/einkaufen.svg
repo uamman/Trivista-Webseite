@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
-  <rect width="800" height="500" fill="#fff8f0"/>
-  <rect x="50" y="50" width="700" height="400" fill="none" stroke="#cc8844" stroke-width="2" stroke-dasharray="10,10" rx="8"/>
-  <text x="400" y="230" text-anchor="middle" font-family="Inter, sans-serif" font-size="24" fill="#aa6622">Einkaufen</text>
-  <text x="400" y="270" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" fill="#cc8844">Coop, Migros, Denner, Bäckereien</text>
-  <text x="400" y="300" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#ddaa66">Platzhalter — durch WordPress-Bild ersetzen</text>
-</svg>

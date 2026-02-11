@@ -1,28 +1,38 @@
 @import "tailwindcss";
 
 :root {
-  --color-primary: #1a1a1a;
-  --color-secondary: #8B7355;
-  --color-secondary-light: #a8926e;
+  --color-primary: #26413C;
+  --color-primary-light: #31534C;
+  --color-primary-medium: #586F6B;
+  --color-accent: #61CE70;
+  --color-accent-light: #A0D6B4;
+  --color-coral: #C55A66;
   --color-background: #ffffff;
-  --color-surface: #f5f5f5;
-  --color-text: #333333;
-  --color-text-light: #666666;
+  --color-surface: #FAF9F8;
+  --color-text: #696969;
+  --color-text-dark: #26413C;
+  --color-border: #E0E0E0;
 }
 
 @theme inline {
   --color-primary: var(--color-primary);
-  --color-secondary: var(--color-secondary);
-  --color-secondary-light: var(--color-secondary-light);
+  --color-primary-light: var(--color-primary-light);
+  --color-primary-medium: var(--color-primary-medium);
+  --color-accent: var(--color-accent);
+  --color-accent-light: var(--color-accent-light);
+  --color-coral: var(--color-coral);
   --color-surface: var(--color-surface);
   --color-text: var(--color-text);
-  --color-text-light: var(--color-text-light);
+  --color-text-dark: var(--color-text-dark);
+  --color-border: var(--color-border);
 }
 
 body {
   background: var(--color-background);
   color: var(--color-text);
-  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  font-family: var(--font-lato, system-ui, -apple-system, sans-serif);
+  font-size: 18px;
+  line-height: 30px;
 }
 
 html {
@@ -31,7 +41,7 @@ html {
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -39,6 +49,56 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-secondary);
+  background: var(--color-primary);
   border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+  opacity: 0.8;
+}
+
+::-webkit-scrollbar-button:single-button {
+  height: 14px;
+  width: 10px;
+  display: block;
+  background-color: var(--color-surface);
+  background-size: 6px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+::-webkit-scrollbar-button:single-button:vertical:decrement {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 5l4-4 4 4' stroke='%2326413C' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+::-webkit-scrollbar-button:single-button:vertical:increment {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2326413C' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+::-webkit-scrollbar-button:single-button:hover {
+  background-color: var(--color-border);
+}
+
+/* Building Navigator SVG interactivity */
+.building-navigator .apartment-level {
+  cursor: pointer;
+  transition: filter 0.4s ease-out, opacity 0.4s ease-out, transform 0.55s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.building-navigator .apartment-level:hover {
+  filter: brightness(0.68) saturate(1.4) drop-shadow(0 0 6px rgba(88, 111, 107, 0.5));
+}
+
+.building-navigator .svg-level-active {
+  filter: brightness(0.62) saturate(1.5) drop-shadow(0 0 10px rgba(88, 111, 107, 0.6));
+}
+
+.building-navigator [class*="overlay"] {
+  cursor: pointer;
+  transition: fill 0.3s ease;
+}
+
+.building-navigator .apartment-building:hover [class*="overlay"] {
+  fill: rgba(97, 206, 112, 0.12) !important;
 }
