@@ -85,8 +85,8 @@ export default function NeueAnfrageTrivista({
           <Section style={headerStyle}>
             <Img
               src="https://trivista.ch/images/logo/trivista-color-logo.webp"
-              width="130"
-              height="36"
+              width="124"
+              height="68"
               alt="Trivista"
               style={{ display: 'block', margin: '0 auto' }}
             />

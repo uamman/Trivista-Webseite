@@ -53,7 +53,10 @@ export default function WohnlagePage() {
           className="object-cover"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-black/30" />
+        {/* Top gradient: surface color fading into image */}
+        <div className="absolute inset-x-0 top-0 h-56 bg-gradient-to-b from-surface via-surface/60 to-transparent" />
+        {/* Constant white overlay over entire image */}
+        <div className="absolute inset-0 bg-white/25" />
       </section>
     </>
   );
