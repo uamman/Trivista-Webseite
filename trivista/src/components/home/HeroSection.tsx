@@ -7,24 +7,37 @@ export default function HeroSection() {
   const [videoReady, setVideoReady] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Eagerly try to play as soon as component mounts
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
+    const onPlaying = () => setVideoReady(true);
+    video.addEventListener("playing", onPlaying, { once: true });
+
+    // Retry play on first user interaction (some mobile browsers need it)
     const tryPlay = () => {
-      video.play().then(() => setVideoReady(true)).catch(() => {});
+      video.play().catch(() => {});
     };
 
-    // If already has enough data, play immediately
-    if (video.readyState >= 3) {
-      tryPlay();
-      return;
-    }
+    // If autoplay didn't kick in yet, retry on first touch/scroll
+    const onInteraction = () => {
+      if (!videoReady) tryPlay();
+      cleanup();
+    };
 
-    video.addEventListener("canplay", tryPlay, { once: true });
-    return () => video.removeEventListener("canplay", tryPlay);
-  }, []);
+    window.addEventListener("touchstart", onInteraction, { once: true, passive: true });
+    window.addEventListener("scroll", onInteraction, { once: true, passive: true });
+
+    const cleanup = () => {
+      window.removeEventListener("touchstart", onInteraction);
+      window.removeEventListener("scroll", onInteraction);
+    };
+
+    return () => {
+      video.removeEventListener("playing", onPlaying);
+      cleanup();
+    };
+  }, [videoReady]);
 
   return (
     <section className="relative flex min-h-[700px] items-center justify-center overflow-hidden bg-primary md:h-screen">
@@ -48,8 +61,10 @@ export default function HeroSection() {
       </div>
 
       {/* Video Background — fades in when ready */}
+      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <video
         ref={videoRef}
+        autoPlay
         muted
         loop
         playsInline
