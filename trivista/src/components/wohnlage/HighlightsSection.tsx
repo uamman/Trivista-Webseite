@@ -29,7 +29,7 @@ export default function HighlightsSection() {
 
               <div className="p-6 md:p-8">
                 {/* Icon with background circle */}
-                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-surface transition-colors duration-500 group-hover:bg-[#C55A66]">
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-surface transition-colors duration-500 group-hover:bg-coral">
                   <Image
                     src={highlight.icon}
                     alt={highlight.title}

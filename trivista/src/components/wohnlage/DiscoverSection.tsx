@@ -84,7 +84,7 @@ export default function DiscoverSection() {
         <div className="fixed inset-0 z-[10002] bg-black">
           <button
             onClick={() => setShowTour(false)}
-            className="absolute top-6 right-6 z-50 flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-text-dark shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all hover:bg-[#C55A66] hover:text-white"
+            className="absolute top-6 right-6 z-50 flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-text-dark shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all hover:bg-coral hover:text-white"
             aria-label="Tour schliessen"
           >
             <X size={20} strokeWidth={2.5} />
