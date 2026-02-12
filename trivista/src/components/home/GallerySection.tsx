@@ -116,13 +116,8 @@ export default function GallerySection() {
               ))}
             </div>
 
-            {/* Counter */}
-            <p className="mt-4 text-center text-sm text-text/60">
-              {mobileIndex + 1} / {images.length}
-            </p>
-
             {/* Dots */}
-            <div className="mt-3 flex justify-center gap-1.5">
+            <div className="mt-4 flex justify-center gap-1.5">
               {images.map((_, i) => (
                 <button
                   key={i}
