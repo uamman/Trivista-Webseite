@@ -11,8 +11,35 @@ export default function AdvantagesSection() {
   return (
     <section className="bg-surface px-6 py-12 md:py-[70px]">
       <div className="mx-auto max-w-[1140px]">
+        {/* Section title – always on top */}
+        <h2 className="mb-6 text-center text-3xl font-normal text-text-dark md:mb-0 md:text-left md:text-[44px] md:leading-tight">
+          Vorteile des Projekts
+        </h2>
+
+        {/* Mobile: icon row above image */}
+        <div className="mb-4 flex justify-center gap-3 md:hidden">
+          {ADVANTAGES.map((adv, index) => (
+            <button
+              key={adv.title}
+              onClick={() => setActive(index)}
+              aria-label={adv.title}
+              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
+                active === index ? "scale-110 bg-coral" : "bg-primary"
+              }`}
+            >
+              <Image
+                src={adv.icon}
+                alt={adv.title}
+                width={22}
+                height={22}
+                className="brightness-0 invert"
+              />
+            </button>
+          ))}
+        </div>
+
         <div className="grid items-start gap-12 md:grid-cols-[1.2fr_1fr]">
-          {/* Left: Image with text overlay – all images preloaded, toggle via opacity */}
+          {/* Left: Image with text overlay */}
           <div className="relative overflow-hidden rounded-[10px] shadow-[0px_10px_10px_0px_rgba(0,0,0,0.11)]">
             <div className="relative aspect-[4/3] w-full">
               {ADVANTAGES.map((adv, index) => (
@@ -29,21 +56,21 @@ export default function AdvantagesSection() {
                 />
               ))}
 
-              {/* Gradient overlay bottom */}
+              {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
               {/* Text overlay */}
-              <div className="absolute inset-x-0 bottom-0 p-8">
+              <div className="absolute inset-x-0 bottom-0 p-5 md:p-8">
                 <motion.div
                   key={active}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <h3 className="mb-2 text-[26px] font-bold text-white">
+                  <h3 className="mb-1 text-lg font-bold text-white md:mb-2 md:text-[26px]">
                     {ADVANTAGES[active].title}
                   </h3>
-                  <p className="max-w-md text-base leading-[26px] text-white/90">
+                  <p className="max-w-md text-sm leading-relaxed text-white/90 md:text-base md:leading-[26px]">
                     {ADVANTAGES[active].description}
                   </p>
                 </motion.div>
@@ -51,20 +78,15 @@ export default function AdvantagesSection() {
             </div>
           </div>
 
-          {/* Right: Heading + vertical list of advantages */}
-          <div>
-            <h2 className="mb-8 text-3xl font-normal text-text-dark md:text-[44px] md:leading-tight">
-              Vorteile des Projekts
-            </h2>
-
-            <div className="flex flex-col gap-4">
+          {/* Right: vertical list – desktop only */}
+          <div className="hidden md:block">
+            <div className="mt-20 flex flex-col gap-4">
               {ADVANTAGES.map((adv, index) => (
                 <button
                   key={adv.title}
                   onClick={() => setActive(index)}
                   className="flex items-center gap-5 text-left"
                 >
-                  {/* Circle icon */}
                   <div
                     className={`flex h-14 shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
                       active === index ? "w-[70px] bg-coral" : "w-14 bg-primary"

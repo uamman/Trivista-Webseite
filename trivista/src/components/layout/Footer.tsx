@@ -7,7 +7,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-[#325A53] text-white">
-      <div className="mx-auto grid max-w-[1140px] grid-cols-1 items-center gap-4 px-6 py-5 md:grid-cols-3">
+      <div className="mx-auto grid max-w-[1140px] grid-cols-1 items-center gap-2 px-6 py-3 md:grid-cols-3 md:gap-4">
         {/* Left: Legal links */}
         <div className="flex justify-center gap-6 text-sm md:justify-start">
           <Link href="/impressum/" className="text-white/80 transition-colors hover:text-white">

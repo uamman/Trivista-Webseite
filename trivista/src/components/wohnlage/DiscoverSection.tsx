@@ -81,13 +81,14 @@ export default function DiscoverSection() {
 
       {/* VR Tour Fullscreen Modal */}
       {showTour && (
-        <div className="fixed inset-0 z-[60] bg-black">
+        <div className="fixed inset-0 z-[10002] bg-black">
           <button
             onClick={() => setShowTour(false)}
-            className="absolute top-4 right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-text-dark shadow-lg transition-colors hover:bg-white"
+            className="absolute top-6 right-6 z-50 flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-bold text-text-dark shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all hover:bg-[#C55A66] hover:text-white"
             aria-label="Tour schliessen"
           >
-            <X size={24} />
+            <X size={20} strokeWidth={2.5} />
+            Schliessen
           </button>
           <iframe
             src="/vr-tour/index.htm"

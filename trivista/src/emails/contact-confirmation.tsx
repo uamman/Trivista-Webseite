@@ -87,8 +87,8 @@ export default function ContactConfirmation({
           <Section style={headerStyle}>
             <Img
               src="https://trivista.ch/images/logo/trivista-color-logo.webp"
-              width="140"
-              height="40"
+              width="124"
+              height="68"
               alt="Trivista"
               style={{ display: 'block', margin: '0 auto' }}
             />
@@ -224,8 +224,8 @@ export default function ContactConfirmation({
           <Section style={footerStyle}>
             <Img
               src="https://trivista.ch/images/logo/trivista-color-logo.webp"
-              width="100"
-              height="28"
+              width="91"
+              height="50"
               alt="Trivista"
               style={{ display: 'block', margin: '0 auto 16px auto' }}
             />
