@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Trivista – Wohnüberbauung Kobelwald
 
-## Getting Started
+Webseite für die Wohnüberbauung Trivista in Kobelwald (St. Galler Rheintal). Neubau-Projekt der Rhycasa AG mit 9 Eigentumswohnungen.
 
-First, run the development server:
+**Live:** [trivista.ch](https://trivista.ch)
+
+## Tech-Stack
+
+- **Framework:** Next.js 16 (App Router, Turbopack)
+- **Styling:** Tailwind CSS 4
+- **Animationen:** Framer Motion
+- **E-Mail:** Resend + React Email
+- **Validierung:** Zod
+- **Bildoptimierung:** Sharp (AVIF/WebP)
+- **Icons:** Lucide React
+- **Sprache:** TypeScript
+
+## Seiten
+
+| Route | Beschreibung |
+|---|---|
+| `/` | Homepage mit Hero-Video, Vorteile, Galerie, Partner |
+| `/angebot` | Wohnungsangebot mit interaktivem Gebäude-Navigator |
+| `/wohnlage` | Standort Kobelwald mit 360°-Tour und Infrastruktur-Tabs |
+| `/kontakt` | Kontaktformular mit E-Mail-Versand via Resend |
+| `/datenschutzerklaerung` | Datenschutzerklärung (DSG-konform) |
+| `/impressum` | Impressum |
+
+## Setup
 
 ```bash
+# Dependencies installieren
+npm install
+
+# Entwicklungsserver starten (Port 3000)
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Production Build
+npm run build
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Umgebungsvariablen
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+`.env.local` anlegen:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+RESEND_API_KEY=re_xxxxxxxxxx
+```
 
-## Learn More
+## Projektstruktur
 
-To learn more about Next.js, take a look at the following resources:
+```
+trivista/
+├── public/
+│   ├── images/          # Bilder (Gallery, Hero, Icons, Logos, etc.)
+│   ├── video/           # Hero-Video (MP4)
+│   ├── docs/            # PDFs (Grundrisse, Baubeschrieb, etc.)
+│   └── vr-tour/         # 360° VR-Tour (statisch)
+├── src/
+│   ├── app/             # Next.js App Router (Seiten + API)
+│   ├── components/      # React-Komponenten
+│   │   ├── home/        # Homepage-Sections
+│   │   ├── wohnlage/    # Wohnlage-Sections
+│   │   ├── angebot/     # Angebot-Sections
+│   │   ├── layout/      # Header, Footer, Cookie-Banner
+│   │   └── ui/          # Wiederverwendbare UI-Komponenten
+│   ├── emails/          # React Email Templates
+│   └── lib/             # Konstanten, Resend-Client
+└── next.config.ts       # Bildoptimierung, Security-Headers, Redirects
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Responsive Design** mit Mobile-First-Ansatz
+- **Hero-Video** mit WebP-Poster und optimiertem MP4
+- **Interaktiver Gebäude-Navigator** (SVG) auf der Angebotsseite
+- **360° VR-Tour** für die Umgebung (Kobelwald)
+- **Galerie** mit Carousel (Desktop: 2 Bilder, Mobile: 1 Bild + Swipe)
+- **Kontaktformular** mit Bestätigungs-Mail an Kunden + interne Benachrichtigung
+- **SEO:** Sitemap, Robots, OpenGraph, strukturierte Daten
+- **Security-Headers:** X-Frame-Options, CSP, Permissions-Policy
+- **WordPress-Redirects:** Alle alten WP-URLs (wp-admin, wp-content, etc.) → 301
 
-## Deploy on Vercel
+## Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Die Seite kann auf jeder Node.js-Plattform deployed werden. Für Vercel einfach das Repository verbinden – keine zusätzliche Konfiguration nötig.
