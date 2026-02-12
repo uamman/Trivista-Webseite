@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { FileText, Download, ChevronRight } from "lucide-react";
@@ -27,6 +27,19 @@ export default function AngebotPage() {
   const [activeApartment, setActiveApartment] = useState<number | null>(null);
   const [hoveredApartment, setHoveredApartment] = useState<number | null>(null);
   const [openStep, setOpenStep] = useState<string | null>("interesse");
+  const svgRef = useRef<HTMLDivElement>(null);
+  const [svgBottom, setSvgBottom] = useState(250); // header (56) + estimated SVG height
+
+  // Measure SVG container height for sticky card positioning
+  useEffect(() => {
+    const el = svgRef.current;
+    if (!el) return;
+    const update = () => setSvgBottom(56 + el.offsetHeight + 8);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // The highlighted apartment is either hovered or clicked
   const highlightedApt = hoveredApartment ?? activeApartment;
@@ -74,7 +87,7 @@ export default function AngebotPage() {
           />
 
           {/* Interactive Building SVG */}
-          <div className="mb-12">
+          <div ref={svgRef} className="sticky top-[56px] z-20 -mx-6 bg-white px-6 pb-2 md:static md:z-auto md:mx-0 md:mb-12 md:bg-transparent md:pb-0">
             <BuildingNavigator
               activeApartment={highlightedApt}
               onApartmentHover={setHoveredApartment}
@@ -146,7 +159,7 @@ export default function AngebotPage() {
             })}
           </motion.div>
 
-          {/* Mobile Cards – sticky stack on scroll */}
+          {/* Mobile Cards – sticky stack below SVG */}
           <div className="md:hidden">
             {APARTMENTS.map((apt, index) => {
               const status = STATUS_CONFIG[apt.status];
@@ -156,13 +169,13 @@ export default function AngebotPage() {
                   key={apt.id}
                   id={`apt-row-${apt.id}`}
                   onClick={() => handleRowClick(apt.id)}
-                  className={`sticky cursor-pointer rounded-[10px] border p-4 shadow-[0_-4px_12px_rgba(0,0,0,0.08)] transition-colors duration-200 ${
+                  className={`sticky cursor-pointer rounded-[10px] border p-4 shadow-[0_-4px_12px_rgba(0,0,0,0.08)] transition-all duration-200 ${
                     isActive
-                      ? "border-accent bg-accent/10"
+                      ? "border-accent bg-white ring-2 ring-accent/30 ring-inset"
                       : "border-border bg-white"
                   }`}
                   style={{
-                    top: `${64 + index * 6}px`,
+                    top: `${svgBottom + index * 6}px`,
                     zIndex: index,
                     marginBottom: index < APARTMENTS.length - 1 ? "12px" : "0",
                   }}
