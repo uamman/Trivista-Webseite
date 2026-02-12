@@ -12,7 +12,7 @@ export default function AdvantagesSection() {
     <section className="bg-surface px-6 py-12 md:py-[70px]">
       <div className="mx-auto max-w-[1140px]">
         {/* Section title – always on top */}
-        <h2 className="mb-6 text-3xl font-normal text-text-dark md:mb-0 md:text-[44px] md:leading-tight">
+        <h2 className="mb-6 text-center text-3xl font-normal text-text-dark md:mb-0 md:text-left md:text-[44px] md:leading-tight">
           Vorteile des Projekts
         </h2>
 
