@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
@@ -24,23 +24,61 @@ const GALLERY_IMAGES = {
   })),
 };
 
+const SM_BREAKPOINT = 640;
+
 export default function GallerySection() {
   const [activeTab, setActiveTab] = useState("innen");
   const [index, setIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${SM_BREAKPOINT - 1}px)`);
+    setIsMobile(mql.matches);
+
+    const handler = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches);
+      setIndex(0);
+    };
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
 
   const images = GALLERY_IMAGES[activeTab as keyof typeof GALLERY_IMAGES];
-  // On desktop we show 2 images, so max index is length - 2
-  // On mobile we show 1, so max index is length - 1
-  // We handle this with CSS (hide second image on mobile)
-  const maxIndex = Math.max(0, images.length - 2);
+
+  // Mobile: 1 image per view, Desktop: 2 images per view
+  const perView = isMobile ? 1 : 2;
+  const maxIndex = Math.max(0, images.length - perView);
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
     setIndex(0);
   };
 
-  const prev = () => setIndex((i) => Math.max(0, i - 1));
-  const next = () => setIndex((i) => Math.min(maxIndex, i + 1));
+  const prev = useCallback(() => setIndex((i) => Math.max(0, i - 1)), []);
+  const next = useCallback(
+    () => setIndex((i) => Math.min(maxIndex, i + 1)),
+    [maxIndex],
+  );
+
+  // Swipe support for mobile
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.touches[0].clientX);
+  };
+
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchStart === null) return;
+    const diff = touchStart - e.changedTouches[0].clientX;
+    if (diff > 50) next();
+    else if (diff < -50) prev();
+    setTouchStart(null);
+  };
+
+  // Mobile: shift 100% per step. Desktop: shift 50% + half gap per step.
+  const transform = isMobile
+    ? `translateX(calc(-${index} * 100%))`
+    : `translateX(calc(-${index} * (50% + 8px)))`;
 
   return (
     <section className="px-6 py-12 md:py-[70px]">
@@ -75,14 +113,14 @@ export default function GallerySection() {
           </button>
 
           {/* Sliding Track */}
-          <div className="overflow-hidden rounded-[10px]">
+          <div
+            className="overflow-hidden rounded-[10px]"
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+          >
             <div
               className="flex gap-4 transition-transform duration-500 ease-out"
-              style={{
-                // Each image is 50% minus half the gap (calc(50% - 8px))
-                // Shift by index * (50% + half gap)
-                transform: `translateX(calc(-${index} * (50% + 8px)))`,
-              }}
+              style={{ transform }}
             >
               {images.map((image) => (
                 <div
